@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>S'inscrire - THE CLOSERS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #fff; }</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+
+    <div class="w-full max-w-2xl bg-[#0a0a0a] border border-white/10 p-8 md:p-12 rounded-3xl shadow-2xl">
+        <h2 class="text-3xl font-bold mb-2">Rejoignez le réseau.</h2>
+        <p class="text-gray-500 mb-8">Créez votre carte de visite digitale.</p>
+
+        <form action="/register" method="POST" enctype="multipart/form-data" class="space-y-6">
+            
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Prénom</label>
+                    <input type="text" name="prenom" required class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Nom</label>
+                    <input type="text" name="nom" required class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Email</label>
+                    <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Téléphone</label>
+                    <input type="tel" name="telephone" required class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Âge</label>
+                    <input type="number" name="age" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Total Closé (€)</label>
+                    <input type="number" name="totalClosed" placeholder="Ex: 150000" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase text-gray-500 mb-1">Niveau</label>
+                <select name="experienceLevel" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                    <option value="Junior">Junior</option>
+                    <option value="Confirmé">Confirmé</option>
+                    <option value="Expert">Expert</option>
+                    <option value="Killer">Killer</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase text-gray-500 mb-1">Compétences (séparées par des virgules)</label>
+                <input type="text" name="skills" placeholder="High Ticket, Immo, B2B, SaaS..." class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Dernier Challenge</label>
+                    <input type="text" name="lastChallenge" placeholder="Top Closer Q4 2024..." class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-gray-500 mb-1">Prix / Awards</label>
+                    <input type="text" name="awards" placeholder="Coupe des ventes..." class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-xs uppercase text-gray-500 mb-1">Misc (Vaisselle, Fun fact)</label>
+                <input type="text" name="misc" placeholder="Champion régional de plonge..." class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+            </div>
+
+            <div class="border-2 border-dashed border-white/20 rounded-xl p-8 text-center hover:bg-white/5 transition cursor-pointer relative">
+                <input type="file" name="photo" accept="image/*" required class="absolute inset-0 opacity-0 cursor-pointer">
+                <p class="text-purple-400 font-bold">Uploade ta meilleure photo</p>
+                <p class="text-xs text-gray-500">JPG, PNG (Max 5Mo)</p>
+            </div>
+
+            <button type="submit" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-purple-500 hover:text-white transition-all uppercase tracking-widest mt-6">
+                Valider mon profil
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

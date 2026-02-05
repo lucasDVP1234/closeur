@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - THE CLOSERS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #fff; }</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+
+    <div class="w-full max-w-md bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+        
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]"></div>
+
+        <h2 class="text-3xl font-bold mb-2 text-center text-white">Connexion.</h2>
+        <p class="text-gray-500 text-center mb-8 text-sm">Accédez au terminal.</p>
+
+        <form action="/login" method="POST" class="space-y-5">
+            <div>
+                <label class="block text-xs uppercase text-gray-500 mb-1 ml-1">Email</label>
+                <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-purple-500 focus:bg-white/10 transition-all placeholder-gray-600" placeholder="exemple@email.com">
+            </div>
+            
+            <div>
+                <label class="block text-xs uppercase text-gray-500 mb-1 ml-1">Mot de passe</label>
+                <input type="password" name="password" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-purple-500 focus:bg-white/10 transition-all placeholder-gray-600" placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-purple-500 hover:text-white transition-all uppercase tracking-widest shadow-lg mt-4">
+                Entrer
+            </button>
+        </form>
+
+        <p class="text-center mt-6 text-sm text-gray-500">
+            Pas encore de compte ? <a href="/register-choice" class="text-white underline hover:text-purple-400">S'inscrire</a>
+        </p>
+    </div>
+
+</body>
+</html>
