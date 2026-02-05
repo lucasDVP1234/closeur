@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const bcrypt = require('bcryptjs'); // Pour crypter les mdp
 const multer = require('multer');
 const multerS3 = require('multer-s3');
@@ -32,11 +33,20 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
+app.set('trust proxy', 1);
+
 // SYSTEME DE SESSION (Cookies)
 app.use(session({
     secret: 'supersecretkey', // Change ça en prod
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URI // On utilise la même DB que pour les users
+    }),
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 60, // La session dure 60 jour (en millisecondes)
+        secure: process.env.NODE_ENV === 'production' // true sur Render (https), false en local
+    }
 }));
 
 // Middleware pour passer l'info utilisateur à toutes les vues
