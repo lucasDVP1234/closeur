@@ -13,7 +13,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.983.0",
     "bcryptjs": "^3.0.3",
-    "connect-mongo": "^6.0.0",
+    "connect-mongo": "^5.1.0",
     "dotenv": "^17.2.3",
     "ejs": "^4.0.1",
     "express": "^5.2.1",

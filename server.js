@@ -15,6 +15,12 @@ const app = express();
 // --- CONFIGURATION ---
 mongoose.connect(process.env.MONGO_URI).then(() => console.log('🔥 DB Connectée'));
 
+const sessionStore = MongoStore.create({
+  client: mongoose.connection.getClient(),
+  dbName: 'test', // Nom de ta base de données
+  collectionName: 'sessions' // Optionnel : nom de la collection
+});
+
 const s3 = new S3Client({
     region: process.env.AWS_REGION,
     credentials: { accessKeyId: process.env.AWS_ACCESS_KEY_ID, secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY }
@@ -40,13 +46,12 @@ app.use(session({
     secret: 'supersecretkey', // Change ça en prod
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URI // On utilise la même DB que pour les users
-    }),
+    store: sessionStore, // Utilisation du store configuré plus haut
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 60, // La session dure 60 jour (en millisecondes)
-        secure: process.env.NODE_ENV === 'production' // true sur Render (https), false en local
-    }
+        maxAge: 24 * 60 * 60 * 1000 * 30, // 30 jours
+        secure: process.env.NODE_ENV === 'production', // True sur Render
+        httpOnly: true,
+    },
 }));
 
 // Middleware pour passer l'info utilisateur à toutes les vues
