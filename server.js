@@ -93,13 +93,37 @@ app.get('/register-choice', (req, res) => res.render('auth/choice'));
 // 3. INSCRIPTION ENTREPRISE
 app.get('/register/company', (req, res) => res.render('auth/register-company'));
 app.post('/register/company', async (req, res) => {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    await Company.create({
-        companyName: req.body.companyName,
-        email: req.body.email,
-        password: hashedPassword
-    });
-    res.redirect('/login');
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        
+        // 1. On stocke la nouvelle entreprise dans une variable
+        const newCompany = await Company.create({
+            companyName: req.body.companyName,
+            email: req.body.email,
+            password: hashedPassword
+        });
+
+        // 2. AUTO-LOGIN : On remplit la session
+        req.session.user = { 
+            id: newCompany._id, 
+            role: 'company', 
+            name: newCompany.companyName 
+        };
+
+        // 3. Sauvegarde session et redirection vers l'annuaire
+        req.session.save((err) => {
+            if (err) {
+                console.error("Erreur session company", err);
+                return res.redirect('/login');
+            }
+            // Les entreprises sont redirigées vers l'accueil pour voir les profils
+            res.redirect('/'); 
+        });
+
+    } catch (e) {
+        console.log(e);
+        res.send("Erreur inscription Company : " + e.message);
+    }
 });
 
 // 4. INSCRIPTION CLOSEUR
