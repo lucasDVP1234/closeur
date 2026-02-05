@@ -72,7 +72,15 @@ function isAuthenticated(req, res, next) {
 app.get('/', async (req, res) => {
     let query = {};
     if (req.query.experience) query.experienceLevel = req.query.experience;
-    if (req.query.skill) query.skills = { $in: [req.query.skill] };
+    if (req.query.skill) query.skills = { $regex: req.query.skill, $options: 'i' };
+    if (req.query.revenueMin) query.totalClosed = { $gte: parseInt(req.query.revenueMin) };
+    
+    // Nouveaux filtres
+    if (req.query.profileType) query.profileType = req.query.profileType;
+    if (req.query.market) query.market = req.query.market;
+    if (req.query.contractType) query.contractType = req.query.contractType; // Vérifie si ça contient la string
+    
+    
     let sort = req.query.sort === 'best' ? { totalClosed: -1 } : { createdAt: -1 };
 
     const closers = await Closer.find(query).sort(sort);
@@ -96,17 +104,26 @@ app.post('/register/company', async (req, res) => {
 
 // 4. INSCRIPTION CLOSEUR
 app.get('/register/closer', (req, res) => res.render('auth/register-closer'));
+// Dans server.js
 app.post('/register/closer', upload.single('photo'), async (req, res) => {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    await Closer.create({
-        ...req.body,
-        password: hashedPassword,
-        skills: req.body.skills ? req.body.skills.split(',').map(s => s.trim()) : [],
-        photoUrl: req.file ? req.file.location : 'https://via.placeholder.com/150'
-    });
-    res.redirect('/login');
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        await Closer.create({
+            ...req.body, // Ça prend tous les champs (nom, prenom, market, etc.)
+            password: hashedPassword,
+            // Pour les checkbox multiples (productTypes), parfois Express renvoie une string si un seul choix.
+            // Cette ligne assure que c'est toujours un tableau :
+            productTypes: [].concat(req.body.productTypes || []),
+            contractType: [].concat(req.body.contractType || []),
+            
+            photoUrl: req.file ? req.file.location : 'https://via.placeholder.com/150'
+        });
+        res.redirect('/login');
+    } catch (e) { 
+        console.log(e);
+        res.send("Erreur inscription Closer : " + e.message); 
+    }
 });
-
 // 5. LOGIN
 app.get('/login', (req, res) => res.render('auth/login'));
 app.post('/login', async (req, res) => {
@@ -140,8 +157,12 @@ app.get('/dashboard', isAuthenticated, async (req, res) => {
 // 7. MISE A JOUR PROFIL (Dashboard)
 app.post('/dashboard/update', isAuthenticated, upload.single('photo'), async (req, res) => {
     const updates = { ...req.body };
-    if (req.file) updates.photoUrl = req.file.location; // Si nouvelle photo
-    updates.skills = req.body.skills ? req.body.skills.split(',').map(s => s.trim()) : [];
+    
+    if (req.file) updates.photoUrl = req.file.location;
+    
+    // Forcer les tableaux pour éviter les bugs
+    updates.productTypes = [].concat(req.body.productTypes || []);
+    updates.contractType = [].concat(req.body.contractType || []);
     
     await Closer.findByIdAndUpdate(req.session.user.id, updates);
     res.redirect('/dashboard');

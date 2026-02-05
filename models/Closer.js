@@ -1,23 +1,48 @@
-// models/Closer.js
 const mongoose = require('mongoose');
 
 const CloserSchema = new mongoose.Schema({
+    // --- 1. IDENTITÉ & ACCÈS ---
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }, // NOUVEAU
-    nom: String,
-    prenom: String,
-    email: String,
-    telephone: String,
-    photoUrl: String, // Lien S3
-    age: Number,
-    experienceLevel: { type: String, enum: ['Junior', 'Confirmé', 'Expert', 'Killer'] },
-    totalClosed: Number, // Montant total closé (€)
-    skills: [String], // Ex: B2B, High-Ticket, Immo...
-    lastChallenge: String, // Dernier challenge remporté
-    awards: String, // "Prix organisés", coupes, etc.
-    webinarsHosted: Number, // Nbr de webinaires
-    misc: String, // "Vaisselle" ou autre fun fact/hobby
-    bio: String,
+    password: { type: String, required: true },
+    nom: { type: String, required: true },
+    prenom: { type: String, required: true },
+    telephone: { type: String, required: true },
+    photoUrl: String, // Photo obligatoire
+
+    // --- 2. PROFILAGE ---
+    profileType: { 
+        type: String, 
+        enum: ['Commercial', 'Closeur', 'Setter'], 
+        default: 'Closeur' 
+    },
+    market: { 
+        type: String, 
+        enum: ['B2B', 'B2C', 'Les deux'],
+        default: 'B2C'
+    },
+    availability: { 
+        type: String, 
+        enum: ['Full Time', 'Mi-temps'] 
+    },
+    totalClosed: { type: Number, default: 0 },
+    
+    // --- 3. COMPÉTENCES & EXPÉRIENCE ---
+    yearsExperience: { type: Number, default: 0 },
+    productTypes: [String], // Ex: ['Infoproduit', 'SaaS']
+    videoUrl: String, // Lien Loom/YouTube
+    pastClients: String, // Liste format texte
+    
+    // --- 4. ATTENTES ---
+    contractType: [String], // Ex: ['100% Commission', 'Fixe + Commission']
+    desiredIncome: Number, // Rémunération mensuelle souhaitée
+    missionType: { 
+        type: String, 
+        enum: ['Mission (Webi/Challenge)', 'Long terme'] 
+    },
+
+    // --- 5. VISION ---
+    closingPhilosophy: String, // "Un bon closeur pour vous c'est..."
+
     createdAt: { type: Date, default: Date.now }
 });
 

@@ -3,121 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Closer Register - THE CLOSERS</title>
+    <title>Candidature Closer - THE CLOSERS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #fff; }</style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #fff; }
+        
+        /* Animation des étapes */
+        .step-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-out;
+        }
+        .step-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Style des Checkbox/Radio cards */
+        .selection-card:has(input:checked) {
+            background-color: rgba(147, 51, 234, 0.2); /* Purple bg */
+            border-color: #9333ea;
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
+        }
+    </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+<body class="min-h-screen flex items-center justify-center p-4 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
 
-    <div class="w-full max-w-3xl bg-[#0a0a0a] border border-white/10 p-8 md:p-12 rounded-3xl shadow-2xl relative">
-        <div class="absolute top-0 right-12 w-32 h-1 bg-purple-600 shadow-[0_0_20px_rgba(147,51,234,0.5)]"></div>
-
-        <div class="flex items-center gap-4 mb-8">
-            <span class="text-4xl">⚔️</span>
-            <div>
-                <h2 class="text-3xl font-bold">Profil Closer</h2>
-                <p class="text-gray-500 text-sm">Remplissez votre fiche technique.</p>
+    <div class="w-full max-w-2xl bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+        
+        <div class="mb-8">
+            <div class="flex justify-between items-end mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-widest text-white">CANDIDATURE <span class="text-purple-500">ÉLITE</span></h2>
+                    <p class="text-xs text-gray-500 mt-1">Étape <span id="current-step-num">1</span> sur 5</p>
+                </div>
+                <a href="/login" class="text-xs text-gray-400 hover:text-white">Déjà un compte ?</a>
+            </div>
+            <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-purple-600 w-1/5 transition-all duration-500 shadow-[0_0_10px_rgba(147,51,234,0.8)]"></div>
             </div>
         </div>
 
-        <form action="/register/closer" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <form id="multi-step-form" action="/register/closer" method="POST" enctype="multipart/form-data">
             
-            <div class="bg-white/5 p-6 rounded-2xl border border-white/5 space-y-4">
-                <h3 class="text-purple-400 text-xs font-bold uppercase tracking-wider mb-2">Identifiants de connexion</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-xs uppercase text-gray-500 mb-1">Email</label>
-                        <input type="email" name="email" required class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs uppercase text-gray-500 mb-1">Mot de passe</label>
-                        <input type="password" name="password" required class="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:border-purple-500 outline-none">
-                    </div>
+            <div class="step-content active" data-step="1">
+                <h3 class="text-xl font-bold mb-6">Identité & Accès</h3>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <input type="text" name="prenom" placeholder="Prénom" required class="bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                    <input type="text" name="nom" placeholder="Nom" required class="bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                </div>
+                <div class="space-y-4">
+                    <input type="email" name="email" placeholder="Email Pro" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                    <input type="tel" name="telephone" placeholder="Téléphone / WhatsApp" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                    <input type="password" name="password" placeholder="Mot de passe" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-xs uppercase text-gray-500 mb-1">Prénom</label>
-                    <input type="text" name="prenom" required class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
-                </div>
-                <div>
-                    <label class="block text-xs uppercase text-gray-500 mb-1">Nom</label>
-                    <input type="text" name="nom" required class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-xs uppercase text-gray-500 mb-1">Téléphone</label>
-                    <input type="tel" name="telephone" required class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
-                </div>
-                <div>
-                    <label class="block text-xs uppercase text-gray-500 mb-1">Âge</label>
-                    <input type="number" name="age" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
-                </div>
-            </div>
-
-            <div class="border-t border-white/10 pt-6">
-                <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-4">Statistiques</h3>
+            <div class="step-content" data-step="2">
+                <h3 class="text-xl font-bold mb-6">Votre Profil</h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                    <div class="col-span-2">
-                        <label class="block text-xs uppercase text-gray-500 mb-1">Total Closé (€)</label>
-                        <input type="number" name="totalClosed" placeholder="Ex: 150000" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white font-mono">
-                    </div>
-                    <div>
-                        <label class="block text-xs uppercase text-gray-500 mb-1">Niveau</label>
-                        <select name="experienceLevel" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
-                            <option value="Junior">Junior</option>
-                            <option value="Confirmé">Confirmé</option>
-                            <option value="Expert">Expert</option>
-                            <option value="Killer">Killer</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label class="block text-xs uppercase text-gray-500 mb-1">Compétences (séparées par des virgules)</label>
-                    <input type="text" name="skills" placeholder="High Ticket, Immo, B2B, SaaS..." class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Vous êtes plutôt :</label>
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <label class="selection-card cursor-pointer bg-white/5 border border-white/10 rounded-xl p-4 text-center transition hover:bg-white/10">
+                        <input type="radio" name="profileType" value="Closeur" checked class="hidden">
+                        <div class="text-2xl mb-1">🎯</div>
+                        <span class="text-sm font-bold">Closeur</span>
+                    </label>
+                    <label class="selection-card cursor-pointer bg-white/5 border border-white/10 rounded-xl p-4 text-center transition hover:bg-white/10">
+                        <input type="radio" name="profileType" value="Commercial" class="hidden">
+                        <div class="text-2xl mb-1">💼</div>
+                        <span class="text-sm font-bold">Commercial</span>
+                    </label>
+                    <label class="selection-card cursor-pointer bg-white/5 border border-white/10 rounded-xl p-4 text-center transition hover:bg-white/10">
+                        <input type="radio" name="profileType" value="Setter" class="hidden">
+                        <div class="text-2xl mb-1">📞</div>
+                        <span class="text-sm font-bold">Setter</span>
+                    </label>
                 </div>
 
                 <div class="grid grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-xs uppercase text-gray-500 mb-1">Dernier Challenge</label>
-                        <input type="text" name="lastChallenge" placeholder="Top Closer Q4..." class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Marché</label>
+                        <select name="market" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                            <option value="B2C">B2C (Particuliers)</option>
+                            <option value="B2B">B2B (Entreprises)</option>
+                            <option value="Les deux">Les deux</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-xs uppercase text-gray-500 mb-1">Prix / Awards</label>
-                        <input type="text" name="awards" placeholder="Coupe des ventes..." class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Disponibilité</label>
+                        <select name="availability" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                            <option value="Full Time">Full Time 🔥</option>
+                            <option value="Mi-temps">Mi-temps</option>
+                        </select>
                     </div>
                 </div>
+            </div>
+
+            <div class="step-content" data-step="3">
+                <h3 class="text-xl font-bold mb-6">Expérience & Track Record</h3>
                 
-                <div class="mt-4">
-                    <label class="block text-xs uppercase text-gray-500 mb-1">Misc (Vaisselle, Fun fact)</label>
-                    <input type="text" name="misc" placeholder="Champion régional de plonge..." class="w-full bg-white/5 border border-white/10 rounded-lg p-3 focus:border-purple-500 outline-none text-white">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Années d'expérience</label>
+                        <input type="number" name="yearsExperience" placeholder="Ex: 3" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Type de produit closé</label>
+                        <div class="flex flex-col gap-2 h-[58px] overflow-y-auto pr-1">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="productTypes" value="Infoproduit" class="accent-purple-500"> <span class="text-sm">Infoproduit</span></label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="productTypes" value="SaaS" class="accent-purple-500"> <span class="text-sm">SaaS / Tech</span></label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="productTypes" value="Software" class="accent-purple-500"> <span class="text-sm">Software</span></label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="productTypes" value="Services" class="accent-purple-500"> <span class="text-sm">Services Agence</span></label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">CA Généré (Total Closé - €)</label>
+                        <input type="number" name="totalClosed" placeholder="Ex: 500000" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none font-mono">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Lien Démo / Vidéo de Closing</label>
+                    <input type="url" name="videoUrl" placeholder="https://loom.com/..." class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none placeholder-gray-600">
+                </div>
+
+                <div>
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Anciens Clients (Liste)</label>
+                    <textarea name="pastClients" rows="2" placeholder="Ex: Google, TheFamily, Oussama Ammar..." class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none placeholder-gray-600"></textarea>
                 </div>
             </div>
 
-            <div class="border-2 border-dashed border-white/20 rounded-xl p-8 text-center hover:bg-white/5 transition cursor-pointer relative group">
-                <input type="file" name="photo" accept="image/*" required class="absolute inset-0 opacity-0 cursor-pointer z-10">
-                <div class="group-hover:scale-105 transition-transform duration-300">
-                    <p class="text-4xl mb-2">📸</p>
-                    <p class="text-purple-400 font-bold">Clique pour uploader ta photo</p>
-                    <p class="text-xs text-gray-500 mt-1">JPG, PNG (Max 5Mo)</p>
+            <div class="step-content" data-step="4">
+                <h3 class="text-xl font-bold mb-6">Vos conditions</h3>
+
+                <div class="mb-6">
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-3 block">Type de contrat recherché</label>
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="selection-card cursor-pointer flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-3 transition hover:bg-white/10">
+                            <input type="checkbox" name="contractType" value="100% Commission" class="hidden">
+                            <div class="w-4 h-4 rounded-full border border-gray-500 bg-transparent relative check-indicator"></div>
+                            <span class="text-sm">100% Commission (High Ticket)</span>
+                        </label>
+                        <label class="selection-card cursor-pointer flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-3 transition hover:bg-white/10">
+                            <input type="checkbox" name="contractType" value="Fixe + Commission" class="hidden">
+                            <div class="w-4 h-4 rounded-full border border-gray-500 bg-transparent relative check-indicator"></div>
+                            <span class="text-sm">Fixe + Commission</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Rémunération / Mois (€)</label>
+                        <input type="number" name="desiredIncome" placeholder="Ex: 5000" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none font-mono">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Type de mission</label>
+                        <select name="missionType" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                            <option value="Long terme">Long terme</option>
+                            <option value="Mission (Webi/Challenge)">Mission (Webi/Challenge)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-4 rounded-xl hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all uppercase tracking-widest mt-6 border border-white/10">
-                Valider mon profil
-            </button>
+            <div class="step-content" data-step="5">
+                <h3 class="text-xl font-bold mb-6">Le mot de la fin</h3>
+
+                <div class="mb-6">
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Un bon closeur pour vous c'est...</label>
+                    <textarea name="closingPhilosophy" required rows="3" placeholder="Votre définition..." class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none"></textarea>
+                </div>
+
+                <div class="mb-6">
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Photo de profil</label>
+                    <div class="border-2 border-dashed border-white/20 rounded-xl p-6 text-center hover:bg-white/5 transition cursor-pointer relative group">
+                        <input type="file" name="photo" accept="image/*" required class="absolute inset-0 opacity-0 cursor-pointer z-10" onchange="previewFile(this)">
+                        <div id="preview-container" class="group-hover:scale-105 transition-transform duration-300">
+                            <p class="text-3xl mb-2">📸</p>
+                            <p class="text-purple-400 font-bold text-sm">Uploader ma photo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between mt-8 pt-6 border-t border-white/10">
+                <button type="button" id="prev-btn" class="hidden text-gray-400 hover:text-white px-6 py-3 rounded-xl font-bold transition">
+                    ← Retour
+                </button>
+                <button type="button" id="next-btn" class="bg-white text-black hover:bg-purple-500 hover:text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg ml-auto">
+                    Suivant
+                </button>
+                <button type="submit" id="submit-btn" class="hidden bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(147,51,234,0.5)] ml-auto">
+                    VALIDER MA FICHE
+                </button>
+            </div>
+
         </form>
-        
-        <p class="text-center mt-6 text-sm text-gray-500">
-            <a href="/login" class="text-gray-400 hover:text-white">Annuler</a>
-        </p>
     </div>
 
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const stepNum = document.getElementById('current-step-num');
+
+        function updateUI() {
+            // 1. Afficher la bonne slide
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.step-content[data-step="${currentStep}"]`).classList.add('active');
+
+            // 2. Gestion des boutons
+            if (currentStep === 1) prevBtn.classList.add('hidden');
+            else prevBtn.classList.remove('hidden');
+
+            if (currentStep === totalSteps) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+
+            // 3. Update Progress Bar
+            const percentage = (currentStep / totalSteps) * 100;
+            progressBar.style.width = percentage + '%';
+            stepNum.innerText = currentStep;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            // Validation basique (champs required)
+            const currentSlide = document.querySelector(`.step-content[data-step="${currentStep}"]`);
+            const inputs = currentSlide.querySelectorAll('input[required], textarea[required], select[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value) {
+                    isValid = false;
+                    input.classList.add('border-red-500'); // Ajoute bordure rouge si vide
+                    setTimeout(() => input.classList.remove('border-red-500'), 2000);
+                }
+            });
+
+            if (isValid) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateUI();
+                }
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+            }
+        });
+
+        // Preview Photo
+        function previewFile(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview-container').innerHTML = `
+                        <img src="${e.target.result}" class="w-16 h-16 rounded-full object-cover mx-auto border-2 border-purple-500 shadow-lg">
+                        <p class="text-green-400 text-xs mt-2 font-bold">Photo chargée !</p>
+                    `;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </body>
 </html>

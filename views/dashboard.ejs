@@ -14,8 +14,9 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .neon-text {
-            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+        .custom-checkbox:checked + div {
+            background-color: rgba(147, 51, 234, 0.2);
+            border-color: #9333ea;
         }
     </style>
 </head>
@@ -42,82 +43,66 @@
 
     <div class="max-w-7xl mx-auto px-6 mt-10">
         
-        <div class="mb-10">
-            <h2 class="text-4xl font-bold mb-2">Bon retour, <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400"><%= closer.prenom %></span>.</h2>
-            <p class="text-gray-500">Voici vos performances actuelles sur le marché.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-purple-600/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-purple-600/20 transition-all"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="bg-purple-500/20 p-3 rounded-lg text-purple-400"><i class="fas fa-euro-sign text-xl"></i></div>
-                    <span class="text-xs font-mono text-green-400 bg-green-400/10 px-2 py-1 rounded">+12% vs last month</span>
-                </div>
-                <h3 class="text-gray-400 text-xs uppercase tracking-wider mb-1">Total Closé</h3>
-                <p class="text-3xl font-bold font-mono"><%= closer.totalClosed.toLocaleString() %> €</p>
+        <div class="mb-10 flex flex-col md:flex-row justify-between items-end gap-4">
+            <div>
+                <h2 class="text-4xl font-bold mb-2">Bon retour, <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400"><%= closer.prenom %></span>.</h2>
+                <p class="text-gray-500">Gérez votre fiche profil et vos disponibilités.</p>
             </div>
-
-            <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-blue-600/20 transition-all"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="bg-blue-500/20 p-3 rounded-lg text-blue-400"><i class="fas fa-trophy text-xl"></i></div>
-                    <span class="text-xs font-mono text-gray-400">Niveau Actuel</span>
+            <div class="bg-white/5 border border-white/10 rounded-xl px-6 py-3 flex items-center gap-4">
+                <div class="text-right">
+                    <p class="text-xs text-gray-500 uppercase font-bold">Statut Actuel</p>
+                    <p class="text-green-400 font-bold"><%= closer.availability %></p>
                 </div>
-                <h3 class="text-gray-400 text-xs uppercase tracking-wider mb-1">Grade</h3>
-                <p class="text-3xl font-bold text-white"><%= closer.experienceLevel %></p>
-            </div>
-
-            <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-pink-600/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-pink-600/20 transition-all"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <div class="bg-pink-500/20 p-3 rounded-lg text-pink-400"><i class="fas fa-eye text-xl"></i></div>
-                    <span class="text-xs font-mono text-gray-400">Cette semaine</span>
-                </div>
-                <h3 class="text-gray-400 text-xs uppercase tracking-wider mb-1">Vues Profil</h3>
-                <p class="text-3xl font-bold">142 <span class="text-sm text-gray-500 font-normal">entreprises</span></p>
+                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             <div class="lg:col-span-1 space-y-6">
-                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">Votre Carte Publique</h3>
+                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">Aperçu Public</h3>
                 
                 <div class="glass-panel rounded-3xl overflow-hidden border-2 border-white/5 relative group">
-                    <div class="h-80 w-full relative">
+                    <div class="h-96 w-full relative">
                         <img src="<%= closer.photoUrl %>" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
-                        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent"></div>
-                        <div class="absolute bottom-4 left-4">
-                            <h2 class="text-2xl font-bold"><%= closer.prenom %> <%= closer.nom %></h2>
-                            <p class="text-purple-400 font-mono text-sm"><%= closer.experienceLevel %></p>
+                        <div class="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+                        
+                        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1 rounded-full border border-white/10">
+                            <span class="text-[10px] font-bold uppercase text-white"><%= closer.profileType %></span>
                         </div>
-                        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1 rounded-full border border-white/10 flex items-center gap-2">
-                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span class="text-[10px] font-bold uppercase">Dispo</span>
+
+                        <div class="absolute top-4 left-4 flex flex-col gap-2">
+                            <% if(closer.yearsExperience > 0) { %>
+                                <div class="bg-purple-500/80 backdrop-blur px-3 py-1 rounded-full border border-white/10 shadow-lg shadow-purple-500/20">
+                                    <span class="text-[10px] font-bold text-white"><%= closer.yearsExperience %> ans d'exp.</span>
+                                </div>
+                            <% } %>
+                            <% if(closer.totalClosed > 0) { %>
+                                <div class="bg-green-500/80 backdrop-blur px-3 py-1 rounded-full border border-white/10 shadow-lg shadow-green-500/20">
+                                    <span class="text-[10px] font-bold text-white"><%= closer.totalClosed %>€ Closés</span>
+                                </div>
+                            <% } %>
                         </div>
-                    </div>
-                    
-                    <div class="p-6 space-y-4">
-                        <div class="flex flex-wrap gap-2">
-                            <% closer.skills.forEach(skill => { %>
-                                <span class="text-[10px] uppercase px-2 py-1 bg-white/10 rounded border border-white/5"><%= skill %></span>
-                            <% }) %>
-                        </div>
-                        <div class="pt-4 border-t border-white/10 flex justify-between items-center text-sm">
-                            <span class="text-gray-500">Dernier Challenge</span>
-                            <span class="text-white font-medium truncate max-w-[150px]"><%= closer.lastChallenge %></span>
+
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <h2 class="text-2xl font-bold mb-1"><%= closer.prenom %> <%= closer.nom %></h2>
+                            <p class="text-purple-400 font-mono text-xs mb-3">
+                                <%= closer.market %> • <%= closer.missionType %>
+                            </p>
+                            
+                            <div class="flex flex-wrap gap-2">
+                                <% closer.productTypes.slice(0, 4).forEach(type => { %>
+                                    <span class="text-[9px] uppercase px-2 py-1 bg-white/20 rounded backdrop-blur-sm border border-white/10"><%= type %></span>
+                                <% }) %>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="glass-panel p-6 rounded-2xl border border-yellow-500/20 bg-yellow-500/5">
-                    <div class="flex items-center gap-4 mb-2">
-                        <i class="fas fa-lightbulb text-yellow-500"></i>
-                        <h4 class="font-bold text-yellow-500">Conseil Pro</h4>
-                    </div>
-                    <p class="text-xs text-gray-400 leading-relaxed">
-                        Les profils avec une photo professionnelle et plus de 3 "Skills" précis ont 40% plus de chances d'être contactés.
+                <div class="glass-panel p-6 rounded-2xl border border-purple-500/20 bg-purple-500/5">
+                    <h4 class="font-bold text-purple-400 mb-2 text-sm">Votre Philosophie</h4>
+                    <p class="text-xs text-gray-300 italic leading-relaxed">
+                        "<%= closer.closingPhilosophy || 'Non définie...' %>"
                     </p>
                 </div>
             </div>
@@ -128,12 +113,9 @@
 
                     <div class="relative z-10">
                         <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
-                            <div>
-                                <h3 class="text-2xl font-bold">Configuration du Profil</h3>
-                                <p class="text-sm text-gray-500">Mettez à jour vos données en temps réel.</p>
-                            </div>
-                            <button form="updateForm" class="bg-white text-black hover:bg-purple-500 hover:text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg flex items-center gap-2">
-                                <i class="fas fa-save"></i> SAUVEGARDER
+                            <h3 class="text-2xl font-bold">Édition du Profil</h3>
+                            <button form="updateForm" class="bg-white text-black hover:bg-purple-500 hover:text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg flex items-center gap-2 text-sm uppercase tracking-wide">
+                                <i class="fas fa-save"></i> Sauvegarder
                             </button>
                         </div>
 
@@ -141,28 +123,33 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <div class="col-span-1">
-                                    <label class="block text-xs uppercase text-gray-500 font-bold mb-3 tracking-wider">Photo de profil</label>
                                     <div class="relative w-full aspect-square bg-black/50 border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center hover:border-purple-500 hover:bg-purple-500/10 transition cursor-pointer group overflow-hidden">
                                         <input type="file" name="photo" class="absolute inset-0 opacity-0 cursor-pointer z-20">
                                         <img src="<%= closer.photoUrl %>" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-30 transition">
-                                        <i class="fas fa-camera text-3xl mb-2 text-white z-10"></i>
-                                        <span class="text-xs text-gray-400 z-10 group-hover:text-white">Modifier</span>
+                                        <i class="fas fa-camera text-2xl mb-2 text-white z-10"></i>
+                                        <span class="text-[10px] text-gray-400 z-10">Changer photo</span>
                                     </div>
                                 </div>
-                                <div class="col-span-2 space-y-6">
-                                    <div class="grid grid-cols-2 gap-6">
+                                <div class="col-span-2 space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-xs uppercase text-gray-500 font-bold mb-2 ml-1">Prénom</label>
-                                            <input type="text" name="prenom" value="<%= closer.prenom %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none transition-all">
+                                            <label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Prénom</label>
+                                            <input type="text" name="prenom" value="<%= closer.prenom %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
                                         </div>
                                         <div>
-                                            <label class="block text-xs uppercase text-gray-500 font-bold mb-2 ml-1">Nom</label>
-                                            <input type="text" name="nom" value="<%= closer.nom %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none transition-all">
+                                            <label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Nom</label>
+                                            <input type="text" name="nom" value="<%= closer.nom %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
                                         </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-xs uppercase text-gray-500 font-bold mb-2 ml-1">Bio / Punchline</label>
-                                        <textarea name="bio" rows="2" placeholder="Votre phrase d'accroche..." class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none transition-all"><%= closer.bio %></textarea>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Email</label>
+                                            <input type="email" value="<%= closer.email %>" disabled class="w-full bg-black/20 border border-white/5 rounded-xl p-3 text-gray-500 cursor-not-allowed">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Téléphone</label>
+                                            <input type="text" name="telephone" value="<%= closer.telephone %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -170,50 +157,114 @@
                             <hr class="border-white/5">
 
                             <div>
-                                <h4 class="text-lg font-bold mb-6 flex items-center gap-2"><i class="fas fa-chart-line text-purple-500"></i> Données Performance</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <h4 class="text-sm font-bold text-purple-400 mb-4 uppercase tracking-wider">Expertise & Positionnement</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                                     <div>
-                                        <label class="block text-xs uppercase text-gray-500 font-bold mb-2 ml-1">Total Closé (Lifetime)</label>
-                                        <div class="relative">
-                                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
-                                            <input type="number" name="totalClosed" value="<%= closer.totalClosed %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 pl-8 text-white focus:border-purple-500 outline-none font-mono text-lg tracking-wider">
-                                        </div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Profil Principal</label>
+                                        <select name="profileType" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                            <option value="Closeur" <%= closer.profileType === 'Closeur' ? 'selected' : '' %>>Closeur</option>
+                                            <option value="Commercial" <%= closer.profileType === 'Commercial' ? 'selected' : '' %>>Commercial</option>
+                                            <option value="Setter" <%= closer.profileType === 'Setter' ? 'selected' : '' %>>Setter</option>
+                                        </select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs uppercase text-gray-500 font-bold mb-2 ml-1">Niveau d'Expérience</label>
-                                        <div class="relative">
-                                            <select name="experienceLevel" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
-                                                <option value="Junior" <%= closer.experienceLevel === 'Junior' ? 'selected' : '' %>>Junior (0 - 50k)</option>
-                                                <option value="Confirmé" <%= closer.experienceLevel === 'Confirmé' ? 'selected' : '' %>>Confirmé (50k - 200k)</option>
-                                                <option value="Expert" <%= closer.experienceLevel === 'Expert' ? 'selected' : '' %>>Expert (200k - 500k)</option>
-                                                <option value="Killer" <%= closer.experienceLevel === 'Killer' ? 'selected' : '' %>>Killer (500k+)</option>
-                                            </select>
-                                            <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
-                                        </div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Marché Cible</label>
+                                        <select name="market" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                            <option value="B2C" <%= closer.market === 'B2C' ? 'selected' : '' %>>B2C</option>
+                                            <option value="B2B" <%= closer.market === 'B2B' ? 'selected' : '' %>>B2B</option>
+                                            <option value="Les deux" <%= closer.market === 'Les deux' ? 'selected' : '' %>>Les deux</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Type de Mission</label>
+                                        <select name="missionType" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                            <option value="Mission (Webi/Challenge)" <%= closer.missionType === 'Mission (Webi/Challenge)' ? 'selected' : '' %>>Mission (Webi/Challenge)</option>
+                                            <option value="Long terme" <%= closer.missionType === 'Long terme' ? 'selected' : '' %>>Long terme</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Années d'Expérience</label>
+                                        <input type="number" name="yearsExperience" value="<%= closer.yearsExperience %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Total Closé (en €)</label>
+                                        <input type="number" name="totalClosed" value="<%= closer.totalClosed %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="mb-6">
+                                    <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Produits maîtrisés</label>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <% ['Infoproduit', 'SaaS', 'High Ticket', 'Services Agency', 'B2B Tech'].forEach(type => { %>
+                                            <label class="cursor-pointer relative">
+                                                <input type="checkbox" name="productTypes" value="<%= type %>" class="custom-checkbox hidden" <%= closer.productTypes && closer.productTypes.includes(type) ? 'checked' : '' %>>
+                                                <div class="bg-black/40 border border-white/10 rounded-lg p-2 text-center text-xs text-gray-300 hover:bg-white/5 transition">
+                                                    <%= type %>
+                                                </div>
+                                            </label>
+                                        <% }) %>
                                     </div>
                                 </div>
                             </div>
 
+                            <hr class="border-white/5">
+
                             <div>
-                                <label class="block text-xs uppercase text-gray-500 font-bold mb-2 ml-1">Compétences (Tags)</label>
-                                <input type="text" name="skills" value="<%= closer.skills.join(', ') %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none transition-all placeholder-gray-600">
-                                <p class="text-[10px] text-gray-500 mt-2 ml-1">Séparez par des virgules (Ex: High Ticket, Immo, B2B)</p>
+                                <h4 class="text-sm font-bold text-purple-400 mb-4 uppercase tracking-wider">Vos Conditions</h4>
+                                
+                                <div class="grid grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Disponibilité</label>
+                                        <select name="availability" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                            <option value="Full Time" <%= closer.availability === 'Full Time' ? 'selected' : '' %>>Full Time 🔥</option>
+                                            <option value="Mi-temps" <%= closer.availability === 'Mi-temps' ? 'selected' : '' %>>Mi-temps</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Revenu souhaité /mois (€)</label>
+                                        <input type="number" name="desiredIncome" value="<%= closer.desiredIncome %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="mb-6">
+                                    <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Type de contrat accepté</label>
+                                    <div class="flex flex-wrap gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" name="contractType" value="100% Commission" class="accent-purple-500" <%= closer.contractType && closer.contractType.includes('100% Commission') ? 'checked' : '' %>>
+                                            <span class="text-sm">100% Commission</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" name="contractType" value="Fixe + Commission" class="accent-purple-500" <%= closer.contractType && closer.contractType.includes('Fixe + Commission') ? 'checked' : '' %>>
+                                            <span class="text-sm">Fixe + Commission</span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-xs uppercase text-gray-500 font-bold mb-2 ml-1">Dernier Gros Challenge</label>
-                                    <input type="text" name="lastChallenge" value="<%= closer.lastChallenge %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-xs uppercase text-gray-500 font-bold mb-2 ml-1">Awards / Prix / Trophées</label>
-                                    <input type="text" name="awards" value="<%= closer.awards %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
-                                </div>
-                            </div>
-                            
+                            <hr class="border-white/5">
+
                             <div>
-                                <label class="block text-xs uppercase text-gray-500 font-bold mb-2 ml-1">Zone Fun (Vaisselle, Hobby...)</label>
-                                <input type="text" name="misc" value="<%= closer.misc %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none italic">
+                                <h4 class="text-sm font-bold text-purple-400 mb-4 uppercase tracking-wider">Track Record & Vision</h4>
+                                
+                                <div class="grid grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Lien Vidéo (Loom/Youtube)</label>
+                                        <input type="url" name="videoUrl" value="<%= closer.videoUrl %>" placeholder="https://..." class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Anciens Clients (Liste)</label>
+                                        <input type="text" name="pastClients" value="<%= closer.pastClients %>" placeholder="Ex: Client A, Client B..." class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Votre vision (Un bon closeur c'est...)</label>
+                                    <textarea name="closingPhilosophy" rows="3" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none"><%= closer.closingPhilosophy %></textarea>
+                                </div>
                             </div>
 
                         </form>
