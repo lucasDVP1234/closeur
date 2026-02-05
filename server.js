@@ -118,7 +118,23 @@ app.post('/register/closer', upload.single('photo'), async (req, res) => {
             
             photoUrl: req.file ? req.file.location : 'https://via.placeholder.com/150'
         });
-        res.redirect('/login');
+        // 2. AUTO-LOGIN : On remplit la session exactement comme dans la route /login
+        req.session.user = { 
+            id: newUser._id, 
+            role: 'closer', 
+            name: newUser.prenom 
+        };
+
+        // 3. On sauvegarde la session pour être sûr qu'elle existe avant la redirection
+        req.session.save((err) => {
+            if (err) {
+                console.error("Erreur de sauvegarde session", err);
+                return res.redirect('/login'); // Fallback au cas où
+            }
+            // 4. Direction le Dashboard direct ! 🚀
+            res.redirect('/dashboard');
+        });
+
     } catch (e) { 
         console.log(e);
         res.send("Erreur inscription Closer : " + e.message); 
