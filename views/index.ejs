@@ -74,68 +74,141 @@
             L'élite du closing <br> à portée de main.
         </h2>
         
-        <form action="/" method="GET" class="glass-card p-6 md:p-8 rounded-3xl mt-8 shadow-2xl relative overflow-hidden border border-purple-500/10">
-            <div class="absolute top-0 right-0 w-96 h-96 bg-purple-900/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+       
+            <form action="/" method="GET" class="glass-card p-6 md:p-8 rounded-3xl mt-8 shadow-2xl relative overflow-hidden border border-purple-500/10">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-purple-900/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-                
-                <div class="lg:col-span-2 space-y-2">
-                    <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Recherche (Produit, Niche)</label>
-                    <div class="relative">
-                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                        <input type="text" name="product" placeholder="Ex: High Ticket, Immo, SaaS..." value="<%= filters.product || '' %>" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white focus:border-purple-500 outline-none transition-all placeholder-gray-600">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+                    
+                    <div class="lg:col-span-2 space-y-2">
+                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Recherche (Produit, Niche)</label>
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                            <input type="text" name="product" placeholder="Ex: High Ticket, Immo, SaaS..." value="<%= filters.product || '' %>" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white focus:border-purple-500 outline-none transition-all placeholder-gray-600">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Type de Profil</label>
+                        <select name="profileType" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
+                            <option value="">Tous les profils</option>
+                            <option value="Closeur" <%= filters.profileType === 'Closeur' ? 'selected' : '' %>>Closeur</option>
+                            <option value="Commercial" <%= filters.profileType === 'Commercial' ? 'selected' : '' %>>Commercial</option>
+                            <option value="Setter" <%= filters.profileType === 'Setter' ? 'selected' : '' %>>Setter</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Marché</label>
+                        <select name="market" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
+                            <option value="">Tous marchés</option>
+                            <option value="B2B" <%= filters.market === 'B2B' ? 'selected' : '' %>>B2B</option>
+                            <option value="B2C" <%= filters.market === 'B2C' ? 'selected' : '' %>>B2C</option>
+                            <option value="Les deux" <%= filters.market === 'Les deux' ? 'selected' : '' %>>Les deux</option>
+                        </select>
+                    </div>
+
+                    <div class="col-span-1 md:col-span-2 lg:col-span-4 space-y-2 border-t border-white/5 pt-4 mt-2">
+                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Types de produits maîtrisés (Multi-choix)</label>
+                        <div class="w-full bg-black/20 border border-white/10 rounded-xl p-4 h-48 overflow-y-auto custom-scrollbar shadow-inner">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                                
+                                <% 
+                                // Helper simple pour vérifier si coché (gère string unique ou array)
+                                const isChecked = (val) => {
+                                    if (!filters.productTypes) return false;
+                                    return Array.isArray(filters.productTypes) ? filters.productTypes.includes(val) : filters.productTypes === val;
+                                } 
+                                %>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="Crypto_Trading" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Crypto_Trading') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Cryptos & Trading</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="Ecommerce_Dropshipping" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Ecommerce_Dropshipping') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">E-com & Drop</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="Marketing_SMMA" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Marketing_SMMA') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Marketing & SMMA</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="Infopreneuriat" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Infopreneuriat') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Infopreneuriat</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="Coaching_Business" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Coaching_Business') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Coaching Business</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="IA" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('IA') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Intelligence Artificielle</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="SaaS_B2B" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('SaaS_B2B') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">SaaS B2B</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="Fitness" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Fitness') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Fitness & Santé</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="Dev_Perso" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Dev_Perso') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Dév. Personnel</span>
+                                </label>
+                                
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="Love_Coaching" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Love_Coaching') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Love Coaching</span>
+                                </label>
+
+                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
+                                    <input type="checkbox" name="productTypes" value="Energies" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Energies') ? 'checked' : '' %>> 
+                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Énergies Renouvelables</span>
+                                </label>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Expérience (Min.)</label>
+                        <input type="number" name="yearsExperience" placeholder="0" value="<%= filters.yearsExperience || '' %>" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Type de Mission</label>
+                        <select name="missionType" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
+                            <option value="">Peu importe</option>
+                            <option value="Mission (Webi/Challenge)" <%= filters.missionType === 'Mission (Webi/Challenge)' ? 'selected' : '' %>>Webi / Challenge</option>
+                            <option value="Long terme" <%= filters.missionType === 'Long terme' ? 'selected' : '' %>>Long terme</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Total Closé (Min)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+                            <input type="number" name="totalClosed" placeholder="Ex: 50000" value="<%= filters.totalClosed || '' %>" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-8 pr-4 text-white focus:border-purple-500 outline-none font-mono">
+                        </div>
+                    </div>
+
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-white text-black hover:bg-purple-600 hover:text-white py-3 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex justify-center items-center gap-2 uppercase tracking-wide text-sm">
+                            <i class="fas fa-filter text-xs"></i> Filtrer
+                        </button>
                     </div>
                 </div>
-
-                <div class="space-y-2">
-                    <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Type de Profil</label>
-                    <select name="profileType" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
-                        <option value="">Tous les profils</option>
-                        <option value="Closeur" <%= filters.profileType === 'Closeur' ? 'selected' : '' %>>Closeur</option>
-                        <option value="Commercial" <%= filters.profileType === 'Commercial' ? 'selected' : '' %>>Commercial</option>
-                        <option value="Setter" <%= filters.profileType === 'Setter' ? 'selected' : '' %>>Setter</option>
-                    </select>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Marché</label>
-                    <select name="market" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
-                        <option value="">Tous marchés</option>
-                        <option value="B2B" <%= filters.market === 'B2B' ? 'selected' : '' %>>B2B</option>
-                        <option value="B2C" <%= filters.market === 'B2C' ? 'selected' : '' %>>B2C</option>
-                        <option value="Les deux" <%= filters.market === 'Les deux' ? 'selected' : '' %>>Les deux</option>
-                    </select>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Expérience (Années min.)</label>
-                    <input type="number" name="yearsExperience" placeholder="0" value="<%= filters.yearsExperience || '' %>" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none">
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Type de Mission</label>
-                    <select name="missionType" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
-                        <option value="">Peu importe</option>
-                        <option value="Mission (Webi/Challenge)" <%= filters.missionType === 'Mission (Webi/Challenge)' ? 'selected' : '' %>>Webi / Challenge</option>
-                        <option value="Long terme" <%= filters.missionType === 'Long terme' ? 'selected' : '' %>>Long terme</option>
-                    </select>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Total Closé (Min)</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
-                        <input type="number" name="totalClosed" placeholder="Ex: 50000" value="<%= filters.totalClosed || '' %>" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-8 pr-4 text-white focus:border-purple-500 outline-none font-mono">
-                    </div>
-                </div>
-
-                <div class="flex items-end">
-                    <button type="submit" class="w-full bg-white text-black hover:bg-purple-600 hover:text-white py-3 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex justify-center items-center gap-2 uppercase tracking-wide text-sm">
-                        <i class="fas fa-filter text-xs"></i> Filtrer
-                    </button>
-                </div>
-            </div>
-        </form>
+            </form>
     </header>
 
     <main class="max-w-7xl mx-auto px-6 pb-20">

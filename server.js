@@ -71,16 +71,48 @@ function isAuthenticated(req, res, next) {
 // 1. ACCUEIL
 app.get('/', async (req, res) => {
     let query = {};
-    if (req.query.experience) query.experienceLevel = req.query.experience;
-    if (req.query.skill) query.skills = { $regex: req.query.skill, $options: 'i' };
-    if (req.query.revenueMin) query.totalClosed = { $gte: parseInt(req.query.revenueMin) };
-    
-    // Nouveaux filtres
-    if (req.query.profileType) query.profileType = req.query.profileType;
-    if (req.query.market) query.market = req.query.market;
-    if (req.query.contractType) query.contractType = req.query.contractType; // Vérifie si ça contient la string
-    
-    
+
+    // --- MISE À JOUR DES FILTRES ---
+
+    // 1. Recherche Textuelle (Barre de recherche "product")
+    // On cherche si le mot tapé correspond à un type de produit ou une compétence
+    if (req.query.product) {
+        query.productTypes = { $regex: req.query.product, $options: 'i' };
+    }
+
+    // 2. Profil (Closeur, Setter...)
+    if (req.query.profileType) {
+        query.profileType = req.query.profileType;
+    }
+
+    // 3. Marché (B2B, B2C)
+    if (req.query.market) {
+        query.market = req.query.market;
+    }
+
+    // 4. Expertise Produit (Les tags cliquables)
+    // Gère le cas où on coche plusieurs cases (Array) ou une seule (String)
+    if (req.query.productTypes) {
+        const types = [].concat(req.query.productTypes); 
+        query.productTypes = { $in: types }; // Cherche si le closeur a au moins un des tags
+    }
+
+    // 5. Expérience (Années Minimum)
+    // Note: Assure-toi que ton modèle Closer.js a bien le champ 'yearsExperience'
+    if (req.query.yearsExperience) {
+        query.yearsExperience = { $gte: parseInt(req.query.yearsExperience) };
+    }
+
+    // 6. Total Closé (Montant Minimum)
+    if (req.query.totalClosed) {
+        query.totalClosed = { $gte: parseInt(req.query.totalClosed) };
+    }
+
+    // 7. Type de Mission
+    // Le formulaire envoie "missionType", mais dans ta DB c'est surement "contractType"
+    if (req.query.missionType) {
+        query.contractType = req.query.missionType;
+    }
     let sort = req.query.sort === 'best' ? { totalClosed: -1 } : { createdAt: -1 };
 
     const closers = await Closer.find(query).sort(sort);
@@ -132,7 +164,7 @@ app.get('/register/closer', (req, res) => res.render('auth/register-closer'));
 app.post('/register/closer', upload.single('photo'), async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        await Closer.create({
+        const newUser = await Closer.create({
             ...req.body, // Ça prend tous les champs (nom, prenom, market, etc.)
             password: hashedPassword,
             // Pour les checkbox multiples (productTypes), parfois Express renvoie une string si un seul choix.

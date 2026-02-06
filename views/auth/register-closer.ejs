@@ -49,21 +49,8 @@
         </div>
 
         <form id="multi-step-form" action="/register/closer" method="POST" enctype="multipart/form-data">
-            
-            <div class="step-content active" data-step="1">
-                <h3 class="text-xl font-bold mb-6">Identité & Accès</h3>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <input type="text" name="prenom" placeholder="Prénom" required class="bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
-                    <input type="text" name="nom" placeholder="Nom" required class="bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
-                </div>
-                <div class="space-y-4">
-                    <input type="email" name="email" placeholder="Email Pro" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
-                    <input type="tel" name="telephone" placeholder="Téléphone / WhatsApp" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
-                    <input type="password" name="password" placeholder="Mot de passe" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
-                </div>
-            </div>
 
-            <div class="step-content" data-step="2">
+            <div class="step-content active" data-step="1">
                 <h3 class="text-xl font-bold mb-6">Votre Profil</h3>
                 
                 <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Vous êtes plutôt :</label>
@@ -103,39 +90,105 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="step-content" data-step="2">
+                <h3 class="text-xl font-bold mb-6">Identité & Accès</h3>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <input type="text" name="prenom" placeholder="Prénom" required class="bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                    <input type="text" name="nom" placeholder="Nom" required class="bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                </div>
+                <div class="space-y-4">
+                    <input type="email" name="email" placeholder="Email Pro" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                    <input type="tel" name="telephone" placeholder="Téléphone / WhatsApp" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                    <input type="password" name="password" placeholder="Mot de passe" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
+                </div>
+            </div>
+
+            
 
             <div class="step-content" data-step="3">
                 <h3 class="text-xl font-bold mb-6">Expérience & Track Record</h3>
-                
+
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <div>
                         <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Années d'expérience</label>
-                        <input type="number" name="yearsExperience" placeholder="Ex: 3" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Type de produit closé</label>
-                        <div class="flex flex-col gap-2 h-[58px] overflow-y-auto pr-1">
-                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="productTypes" value="Infoproduit" class="accent-purple-500"> <span class="text-sm">Infoproduit</span></label>
-                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="productTypes" value="SaaS" class="accent-purple-500"> <span class="text-sm">SaaS / Tech</span></label>
-                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="productTypes" value="Software" class="accent-purple-500"> <span class="text-sm">Software</span></label>
-                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="productTypes" value="Services" class="accent-purple-500"> <span class="text-sm">Services Agence</span></label>
-                        </div>
+                        <input type="number" name="yearsExperience" placeholder="Ex: 3" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none transition-colors">
                     </div>
                     <div>
                         <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">CA Généré (Total Closé - €)</label>
-                        <input type="number" name="totalClosed" placeholder="Ex: 500000" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none font-mono">
+                        <input type="number" name="totalClosed" placeholder="Ex: 500000" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none font-mono transition-colors">
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Lien Démo / Vidéo de Closing</label>
-                    <input type="url" name="videoUrl" placeholder="https://loom.com/..." class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none placeholder-gray-600">
+                <div class="mb-6">
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Types de produits closés (Multi-choix)</label>
+                    <div class="w-full bg-white/5 border border-white/10 rounded-xl p-4 h-64 overflow-y-auto custom-scrollbar">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="Crypto_Trading" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">Cryptomonnaies & Trading <span class="text-xs text-gray-500 block">(Marchés financiers, DeFi)</span></span>
+                            </label>
+
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="Ecommerce_Dropshipping" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">E-commerce & Dropshipping <span class="text-xs text-gray-500 block">(Amazon FBA, Shopify)</span></span>
+                            </label>
+
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="Marketing_SMMA" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">Marketing Digital & SMMA <span class="text-xs text-gray-500 block">(Agences réseaux sociaux)</span></span>
+                            </label>
+
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="Infopreneuriat" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">Infopreneuriat <span class="text-xs text-gray-500 block">(Vente d'expertise en ligne)</span></span>
+                            </label>
+
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="Coaching_Business" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">Coaching Business <span class="text-xs text-gray-500 block">(Mentoring entrepreneurs)</span></span>
+                            </label>
+
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="IA" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">Intelligence Artificielle (IA) <span class="text-xs text-gray-500 block">(Consulting & Formation)</span></span>
+                            </label>
+
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="SaaS_B2B" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">SaaS & Logiciels B2B <span class="text-xs text-gray-500 block">(Solutions entreprises)</span></span>
+                            </label>
+
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="Fitness" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">Perte de poids & Fitness <span class="text-xs text-gray-500 block">(Marché evergreen)</span></span>
+                            </label>
+
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="Dev_Perso" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">Développement personnel <span class="text-xs text-gray-500 block">(Mindset, Leadership)</span></span>
+                            </label>
+
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="Love_Coaching" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">Relations & Love Coaching <span class="text-xs text-gray-500 block">(Rencontres, couple)</span></span>
+                            </label>
+                            
+                            <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                <input type="checkbox" name="productTypes" value="Energies" class="w-4 h-4 accent-purple-500 rounded border-gray-600"> 
+                                <span class="text-sm text-gray-300 group-hover:text-white">Énergies Renouvelables <span class="text-xs text-gray-500 block">(Solaire, pompes à chaleur)</span></span>
+                            </label>
+
+                        </div>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Anciens Clients (Liste)</label>
-                    <textarea name="pastClients" rows="2" placeholder="Ex: Google, TheFamily, Oussama Ammar..." class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none placeholder-gray-600"></textarea>
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Partenaires (Liste)</label>
+                    <textarea name="pastClients" rows="2" placeholder="Ex: Google, TheFamily, Oussama Ammar..." class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none placeholder-gray-600 transition-colors"></textarea>
                 </div>
+
             </div>
 
             <div class="step-content" data-step="4">
@@ -189,6 +242,11 @@
                             <p class="text-purple-400 font-bold text-sm">Uploader ma photo</p>
                         </div>
                     </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Lien Démo / Vidéo de Closing</label>
+                    <input type="url" name="videoUrl" placeholder="https://loom.com/..." class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-purple-500 outline-none placeholder-gray-600">
                 </div>
             </div>
 
