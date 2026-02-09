@@ -1,477 +1,629 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE CLOSERS | Elite Directory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        surface: { 50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8', 800: '#111113', 900: '#09090b', 950: '#050506' },
+                        accent: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' },
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #ffffff; }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        
-        .neon-border:hover {
-            border-color: rgba(147, 51, 234, 0.5);
-            box-shadow: 0 0 25px rgba(147, 51, 234, 0.15);
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: #050506; color: #fafafa; overflow-x: hidden; }
+
+        /* --- Grain overlay --- */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 9999;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            opacity: 0.5;
         }
 
-        /* Scrollbar invisible */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* --- Custom scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.6); }
 
-        /* Animation Modal */
-        .modal-enter { animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        /* --- Selection --- */
+        ::selection { background: rgba(139,92,246,0.4); color: white; }
+
+        /* --- Animated gradient line --- */
+        .gradient-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8b5cf6, #a78bfa, #8b5cf6, transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        @keyframes shimmer { 0%,100% { background-position: 200% 0; } 50% { background-position: -200% 0; } }
+
+        /* --- Card hover glow --- */
+        .card-glow {
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+        }
+        .card-glow::after {
+            content: '';
+            position: absolute; inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(139,92,246,0), rgba(139,92,246,0.15), rgba(139,92,246,0));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .card-glow:hover::after { opacity: 1; }
+        .card-glow:hover { transform: translateY(-6px); box-shadow: 0 20px 60px -15px rgba(139,92,246,0.2); }
+
+        /* --- Stagger fade-in --- */
+        .stagger-in { opacity: 0; transform: translateY(24px); animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Modal --- */
+        .modal-backdrop { opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+        .modal-backdrop.active { opacity: 1; pointer-events: all; }
+        .modal-panel { transform: translateY(30px) scale(0.97); opacity: 0; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+        .modal-backdrop.active .modal-panel { transform: translateY(0) scale(1); opacity: 1; }
+
+        /* --- Filter panel toggle --- */
+        .filter-panel { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease; opacity: 0; }
+        .filter-panel.open { max-height: 800px; opacity: 1; }
+
+        /* --- Stat counter --- */
+        .stat-pill {
+            background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(139,92,246,0.02));
+            border: 1px solid rgba(139,92,246,0.12);
+        }
+
+        /* --- Input focus ring --- */
+        input:focus, select:focus { outline: none; border-color: #8b5cf6 !important; box-shadow: 0 0 0 3px rgba(139,92,246,0.15); }
+
+        /* --- Reveal animation --- */
+        .reveal-btn .reveal-cover { transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-btn.revealed .reveal-cover { opacity: 0; transform: translateY(8px); pointer-events: none; }
+        .reveal-btn.revealed .contact-val { filter: blur(0); }
+
+        /* --- Tag chip --- */
+        .tag-chip {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.2s ease;
+        }
+        .tag-chip:hover { background: rgba(139,92,246,0.12); border-color: rgba(139,92,246,0.3); }
+
+        /* --- Smooth checkbox --- */
+        input[type="checkbox"] {
+            appearance: none; -webkit-appearance: none;
+            width: 16px; height: 16px; border-radius: 4px;
+            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.03);
+            cursor: pointer; transition: all 0.2s ease;
+            position: relative; flex-shrink: 0;
+        }
+        input[type="checkbox"]:checked {
+            background: #7c3aed; border-color: #7c3aed;
+        }
+        input[type="checkbox"]:checked::after {
+            content: '✓'; position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 10px; font-weight: 700;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.2rem !important; line-height: 1.1 !important; }
         }
     </style>
 </head>
-<body class="min-h-screen bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+<body>
 
-    <nav class="border-b border-white/5 py-5 sticky top-0 z-50 bg-[#050505]/80 backdrop-blur-xl">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <a href="/" class="group flex items-center gap-3">
-                <div class="w-1 h-5 bg-purple-600 rounded-full shadow-[0_0_10px_rgba(147,51,234,0.8)] group-hover:h-8 group-hover:bg-white transition-all duration-300"></div>
-                <h1 class="text-xl font-bold tracking-widest text-white">THE <span class="text-purple-500 group-hover:text-white transition-colors">CLOSERS</span>.</h1>
-            </a>
-            
-            <div class="flex items-center gap-6">
-                <% if (user) { %>
-                    <div class="flex items-center gap-4 bg-white/5 border border-white/10 px-1 py-1 pr-4 rounded-full backdrop-blur-md">
-                        <% if (user.role === 'closer') { %>
-                            <a href="/dashboard" class="flex items-center gap-2 bg-white/10 hover:bg-purple-600 hover:text-white text-white px-4 py-2 rounded-full transition-all text-xs font-bold uppercase tracking-wide group">
-                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse group-hover:bg-white"></span>
-                                Cockpit
-                            </a>
-                        <% } else { %>
-                            <div class="flex items-center gap-2 px-4 py-2">
-                                <span class="text-lg">🏢</span>
-                                <span class="text-sm font-bold text-gray-200"><%= user.name %></span>
-                            </div>
-                        <% } %>
-                        <div class="w-px h-4 bg-white/10"></div>
-                        <a href="/logout" class="text-red-400 hover:text-red-300 hover:bg-red-500/10 p-2 rounded-full transition-all"><i class="fas fa-power-off text-sm"></i></a>
-                    </div>
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav class="sticky top-0 z-50 bg-surface-950/70 backdrop-blur-2xl border-b border-white/[0.04]">
+    <div class="max-w-[1400px] mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
+        <!-- Logo -->
+        <a href="/" class="group flex items-center gap-3 select-none">
+            <div class="relative w-8 h-8 rounded-lg bg-accent-600 flex items-center justify-center overflow-hidden group-hover:rounded-xl transition-all duration-300">
+                <span class="text-white font-black text-sm tracking-tight">TC</span>
+                <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            </div>
+            <span class="text-sm font-bold tracking-[0.2em] uppercase text-white/80 group-hover:text-white transition-colors">The Closers</span>
+        </a>
+
+        <!-- Right side -->
+        <div class="flex items-center gap-3">
+            <% if (user) { %>
+                <% if (user.role === 'closer') { %>
+                    <a href="/dashboard" class="flex items-center gap-2.5 bg-white/[0.06] hover:bg-accent-600 border border-white/[0.08] hover:border-accent-500 px-4 py-2 rounded-full transition-all duration-300 group">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse group-hover:bg-white"></span>
+                        <span class="text-xs font-semibold text-white/70 group-hover:text-white tracking-wide uppercase">Cockpit</span>
+                    </a>
                 <% } else { %>
-                    <div class="flex items-center gap-6">
-                        <a href="/login" class="text-gray-400 hover:text-white text-sm font-bold transition-colors">Connexion</a>
-                        <a href="/register-choice" class="bg-white text-black px-6 py-2.5 rounded-full font-bold hover:bg-purple-600 hover:text-white transition-all text-xs uppercase tracking-wider flex items-center gap-2">Rejoindre <span class="text-purple-600 group-hover:text-white">→</span></a>
+                    <div class="flex items-center gap-2 px-4 py-2">
+                        <span class="text-sm font-semibold text-white/60"><%= user.name %></span>
                     </div>
                 <% } %>
-            </div>
+                <a href="/logout" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/[0.04] hover:bg-red-500/15 border border-white/[0.06] hover:border-red-500/30 transition-all duration-300 group">
+                    <i class="fas fa-arrow-right-from-bracket text-[11px] text-white/30 group-hover:text-red-400 transition-colors"></i>
+                </a>
+            <% } else { %>
+                <a href="/login" class="text-white/50 hover:text-white text-xs font-semibold tracking-wide uppercase transition-colors px-3 py-2">Connexion</a>
+                <a href="/register-choice" class="bg-white text-surface-950 hover:bg-accent-500 hover:text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-lg shadow-white/5 hover:shadow-accent-500/20">Rejoindre</a>
+            <% } %>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <header class="pt-16 pb-10 px-6 max-w-7xl mx-auto">
-        <h2 class="text-5xl md:text-7xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-600 tracking-tighter">
-            L'élite du closing <br> à portée de main.
+<!-- ═══════════════ HERO ═══════════════ -->
+<header class="max-w-[1400px] mx-auto px-5 md:px-8 pt-14 pb-6">
+    <div class="stagger-in" style="animation-delay:0.05s">
+        <p class="text-accent-400 text-xs font-semibold tracking-[0.3em] uppercase mb-5 flex items-center gap-2">
+            <span class="w-6 h-px bg-accent-500"></span> Répertoire Élite
+        </p>
+        <h2 class="hero-title text-[clamp(2.2rem,5.5vw,4.5rem)] font-extrabold leading-[1.05] tracking-tight mb-5">
+            Trouvez le closer<br>
+            <span class="text-white/25">qui va tout changer.</span>
         </h2>
-        
-       
-            <form action="/" method="GET" class="glass-card p-6 md:p-8 rounded-3xl mt-8 shadow-2xl relative overflow-hidden border border-purple-500/10">
-                <div class="absolute top-0 right-0 w-96 h-96 bg-purple-900/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+        <p class="text-white/35 text-base md:text-lg max-w-xl font-light leading-relaxed">
+            Parcourez notre répertoire de closers vérifiés. Filtrez par expertise, expérience et spécialisation pour trouver le talent parfait.
+        </p>
+    </div>
+</header>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-                    
-                    <div class="lg:col-span-2 space-y-2">
-                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Recherche (Produit, Niche)</label>
-                        <div class="relative">
-                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                            <input type="text" name="product" placeholder="Ex: High Ticket, Immo, SaaS..." value="<%= filters.product || '' %>" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white focus:border-purple-500 outline-none transition-all placeholder-gray-600">
-                        </div>
-                    </div>
+<!-- ═══════════════ SEARCH BAR + FILTER TOGGLE ═══════════════ -->
+<section class="max-w-[1400px] mx-auto px-5 md:px-8 mb-8 stagger-in" style="animation-delay:0.15s">
+    <form action="/" method="GET" id="filterForm">
+        <!-- Main search row -->
+        <div class="flex flex-col md:flex-row gap-3">
+            <div class="flex-1 relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-sm"></i>
+                <input type="text" name="product" placeholder="Rechercher un produit, une niche, un mot-clé…" value="<%= filters.product || '' %>"
+                    class="w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl py-4 pl-11 pr-5 text-white placeholder-white/20 text-sm font-medium transition-all duration-300 hover:border-white/15">
+            </div>
+            <button type="button" onclick="toggleFilters()" id="filterToggleBtn"
+                class="flex items-center justify-center gap-2.5 bg-white/[0.04] border border-white/[0.08] hover:border-accent-500/40 hover:bg-accent-600/10 rounded-2xl px-6 py-4 transition-all duration-300 group shrink-0">
+                <i class="fas fa-sliders text-sm text-white/30 group-hover:text-accent-400 transition-colors"></i>
+                <span class="text-xs font-bold uppercase tracking-wider text-white/50 group-hover:text-white transition-colors">Filtres</span>
+                <i class="fas fa-chevron-down text-[10px] text-white/20 group-hover:text-accent-400 transition-all duration-300" id="filterChevron"></i>
+            </button>
+            <button type="submit"
+                class="bg-accent-600 hover:bg-accent-700 text-white px-8 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-lg shadow-accent-600/20 hover:shadow-accent-600/40 shrink-0 flex items-center gap-2">
+                <i class="fas fa-bolt text-[10px]"></i> Rechercher
+            </button>
+        </div>
 
+        <!-- Expandable filters -->
+        <div class="filter-panel mt-4" id="filterPanel">
+            <div class="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 md:p-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+                    <!-- Profile Type -->
                     <div class="space-y-2">
-                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Type de Profil</label>
-                        <select name="profileType" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
-                            <option value="">Tous les profils</option>
+                        <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Type de profil</label>
+                        <select name="profileType" class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 px-4 text-sm text-white/80 appearance-none cursor-pointer transition-all hover:border-white/15">
+                            <option value="">Tous</option>
                             <option value="Closeur" <%= filters.profileType === 'Closeur' ? 'selected' : '' %>>Closeur</option>
                             <option value="Commercial" <%= filters.profileType === 'Commercial' ? 'selected' : '' %>>Commercial</option>
                             <option value="Setter" <%= filters.profileType === 'Setter' ? 'selected' : '' %>>Setter</option>
                         </select>
                     </div>
-
+                    <!-- Market -->
                     <div class="space-y-2">
-                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Marché</label>
-                        <select name="market" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
-                            <option value="">Tous marchés</option>
+                        <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Marché</label>
+                        <select name="market" class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 px-4 text-sm text-white/80 appearance-none cursor-pointer transition-all hover:border-white/15">
+                            <option value="">Tous</option>
                             <option value="B2B" <%= filters.market === 'B2B' ? 'selected' : '' %>>B2B</option>
                             <option value="B2C" <%= filters.market === 'B2C' ? 'selected' : '' %>>B2C</option>
-                            <option value="Les deux" <%= filters.market === 'Les deux' ? 'selected' : '' %>>Les deux</option>
+                            <option value="Les deux" <%= filters.market === 'Les deux' ? 'selected' : '' %>>B2B & B2C</option>
                         </select>
                     </div>
-
-                    <div class="col-span-1 md:col-span-2 lg:col-span-4 space-y-2 border-t border-white/5 pt-4 mt-2">
-                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Types de produits maîtrisés (Multi-choix)</label>
-                        <div class="w-full bg-black/20 border border-white/10 rounded-xl p-4 h-48 overflow-y-auto custom-scrollbar shadow-inner">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                                
-                                <% 
-                                // Helper simple pour vérifier si coché (gère string unique ou array)
-                                const isChecked = (val) => {
-                                    if (!filters.productTypes) return false;
-                                    return Array.isArray(filters.productTypes) ? filters.productTypes.includes(val) : filters.productTypes === val;
-                                } 
-                                %>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="Crypto_Trading" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Crypto_Trading') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Cryptos & Trading</span>
-                                </label>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="Ecommerce_Dropshipping" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Ecommerce_Dropshipping') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">E-com & Drop</span>
-                                </label>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="Marketing_SMMA" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Marketing_SMMA') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Marketing & SMMA</span>
-                                </label>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="Infopreneuriat" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Infopreneuriat') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Infopreneuriat</span>
-                                </label>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="Coaching_Business" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Coaching_Business') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Coaching Business</span>
-                                </label>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="IA" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('IA') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Intelligence Artificielle</span>
-                                </label>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="SaaS_B2B" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('SaaS_B2B') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">SaaS B2B</span>
-                                </label>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="Fitness" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Fitness') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Fitness & Santé</span>
-                                </label>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="Dev_Perso" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Dev_Perso') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Dév. Personnel</span>
-                                </label>
-                                
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="Love_Coaching" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Love_Coaching') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Love Coaching</span>
-                                </label>
-
-                                <label class="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors border border-transparent hover:border-white/5">
-                                    <input type="checkbox" name="productTypes" value="Energies" class="w-4 h-4 accent-purple-500 rounded border-gray-600 bg-white/10" <%= isChecked('Energies') ? 'checked' : '' %>> 
-                                    <span class="text-xs text-gray-300 group-hover:text-white font-medium">Énergies Renouvelables</span>
-                                </label>
-
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- Experience -->
                     <div class="space-y-2">
-                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Expérience (Min.)</label>
-                        <input type="number" name="yearsExperience" placeholder="0" value="<%= filters.yearsExperience || '' %>" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none">
+                        <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Expérience min.</label>
+                        <input type="number" name="yearsExperience" placeholder="0 ans" value="<%= filters.yearsExperience || '' %>"
+                            class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 px-4 text-sm text-white/80 placeholder-white/15 transition-all hover:border-white/15">
                     </div>
-
+                    <!-- Mission -->
                     <div class="space-y-2">
-                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Type de Mission</label>
-                        <select name="missionType" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-purple-500 outline-none appearance-none cursor-pointer">
+                        <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Type de mission</label>
+                        <select name="missionType" class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 px-4 text-sm text-white/80 appearance-none cursor-pointer transition-all hover:border-white/15">
                             <option value="">Peu importe</option>
                             <option value="Mission (Webi/Challenge)" <%= filters.missionType === 'Mission (Webi/Challenge)' ? 'selected' : '' %>>Webi / Challenge</option>
                             <option value="Long terme" <%= filters.missionType === 'Long terme' ? 'selected' : '' %>>Long terme</option>
                         </select>
                     </div>
+                </div>
 
-                    <div class="space-y-2">
-                        <label class="text-[9px] uppercase font-bold text-gray-500 tracking-wider ml-1">Total Closé (Min)</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
-                            <input type="number" name="totalClosed" placeholder="Ex: 50000" value="<%= filters.totalClosed || '' %>" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-8 pr-4 text-white focus:border-purple-500 outline-none font-mono">
-                        </div>
-                    </div>
-
-                    <div class="flex items-end">
-                        <button type="submit" class="w-full bg-white text-black hover:bg-purple-600 hover:text-white py-3 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex justify-center items-center gap-2 uppercase tracking-wide text-sm">
-                            <i class="fas fa-filter text-xs"></i> Filtrer
-                        </button>
+                <!-- Total Closed -->
+                <div class="mb-6">
+                    <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Montant total closé (min)</label>
+                    <div class="relative mt-2 max-w-xs">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-sm font-mono">€</span>
+                        <input type="number" name="totalClosed" placeholder="50 000" value="<%= filters.totalClosed || '' %>"
+                            class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 pl-9 pr-4 text-sm text-white/80 font-mono placeholder-white/15 transition-all hover:border-white/15">
                     </div>
                 </div>
-            </form>
-    </header>
 
-    <main class="max-w-7xl mx-auto px-6 pb-20">
-        
-        <div class="flex justify-between items-center mb-6">
-            <p class="text-gray-400 text-sm"><span class="text-white font-bold"><%= closers.length %></span> talents trouvés</p>
+                <!-- Product Types -->
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider mb-3 block">Expertise produit</label>
+                    <%
+                    const isChecked = (val) => {
+                        if (!filters.productTypes) return false;
+                        return Array.isArray(filters.productTypes) ? filters.productTypes.includes(val) : filters.productTypes === val;
+                    }
+                    const productTypeOptions = [
+                        { value: 'Crypto_Trading', label: 'Crypto & Trading', icon: 'fa-bitcoin-sign' },
+                        { value: 'Ecommerce_Dropshipping', label: 'E-com & Drop', icon: 'fa-cart-shopping' },
+                        { value: 'Marketing_SMMA', label: 'Marketing & SMMA', icon: 'fa-bullhorn' },
+                        { value: 'Infopreneuriat', label: 'Infopreneuriat', icon: 'fa-graduation-cap' },
+                        { value: 'Coaching_Business', label: 'Coaching Business', icon: 'fa-handshake' },
+                        { value: 'IA', label: 'Intelligence Artificielle', icon: 'fa-microchip' },
+                        { value: 'SaaS_B2B', label: 'SaaS B2B', icon: 'fa-cloud' },
+                        { value: 'Fitness', label: 'Fitness & Santé', icon: 'fa-dumbbell' },
+                        { value: 'Dev_Perso', label: 'Dév. Personnel', icon: 'fa-brain' },
+                        { value: 'Love_Coaching', label: 'Love Coaching', icon: 'fa-heart' },
+                        { value: 'Energies', label: 'Énergies Renouvelables', icon: 'fa-solar-panel' },
+                    ];
+                    %>
+                    <div class="flex flex-wrap gap-2">
+                        <% productTypeOptions.forEach(opt => { %>
+                            <label class="tag-chip rounded-xl px-3.5 py-2 cursor-pointer flex items-center gap-2 select-none has-[:checked]:bg-accent-600/15 has-[:checked]:border-accent-500/40">
+                                <input type="checkbox" name="productTypes" value="<%= opt.value %>" class="sr-only" <%= isChecked(opt.value) ? 'checked' : '' %>>
+                                <i class="fas <%= opt.icon %> text-[10px] text-white/25"></i>
+                                <span class="text-xs font-medium text-white/50"><%= opt.label %></span>
+                            </label>
+                        <% }) %>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6 pt-4 border-t border-white/[0.04]">
+                    <a href="/" class="text-white/25 hover:text-white/60 text-xs font-medium transition-colors mr-4 py-2">Réinitialiser</a>
+                    <button type="submit" class="bg-white text-surface-950 hover:bg-accent-500 hover:text-white px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300">Appliquer</button>
+                </div>
+            </div>
         </div>
+    </form>
+</section>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <% closers.forEach(closer => { %>
-                
-                <div onclick="openModal('modal-<%= closer._id %>')" class="glass-card rounded-3xl overflow-hidden group neon-border transition-all duration-300 relative flex flex-col h-full cursor-pointer hover:-translate-y-2">
-                    
-                    <div class="h-64 w-full relative overflow-hidden">
-                        <img src="<%= closer.photoUrl %>" alt="<%= closer.nom %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0">
-                        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#050505] to-transparent h-24"></div>
-                        
-                        <div class="absolute top-4 right-4 flex flex-col gap-2 items-end">
-                            <span class="bg-black/80 backdrop-blur border border-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg text-white">
-                                <%= closer.yearsExperience %> Ans d'Exp.
-                            </span>
-                            <span class="bg-purple-600/90 backdrop-blur px-2 py-1 text-[9px] font-bold uppercase rounded-full shadow-lg text-white">
-                                <%= closer.profileType %>
-                            </span>
+<!-- ═══════════════ RESULTS HEADER ═══════════════ -->
+<section class="max-w-[1400px] mx-auto px-5 md:px-8 mb-6 stagger-in" style="animation-delay:0.2s">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></div>
+            <p class="text-white/40 text-sm"><span class="text-white font-bold"><%= closers.length %></span> talent<%= closers.length > 1 ? 's' : '' %> trouvé<%= closers.length > 1 ? 's' : '' %></p>
+        </div>
+    </div>
+    <div class="gradient-line mt-4 rounded-full"></div>
+</section>
+
+<!-- ═══════════════ GRID ═══════════════ -->
+<main class="max-w-[1400px] mx-auto px-5 md:px-8 pb-24">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <% closers.forEach((closer, idx) => { %>
+            <div onclick="openModal('modal-<%= closer._id %>')"
+                 class="card-glow bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden cursor-pointer flex flex-col stagger-in group"
+                 style="animation-delay: <%= 0.08 * (idx % 9) + 0.25 %>s">
+
+                <!-- Image -->
+                <div class="h-56 relative overflow-hidden">
+                    <img src="<%= closer.photoUrl %>" alt="<%= closer.nom %>" loading="lazy"
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 will-change-transform"
+                         style="filter: saturate(0.85) brightness(0.9);">
+                    <div class="absolute inset-0 bg-gradient-to-t from-surface-950 via-surface-950/30 to-transparent"></div>
+
+                    <!-- Badges -->
+                    <div class="absolute top-3 right-3 flex flex-col gap-1.5 items-end">
+                        <span class="bg-surface-950/80 backdrop-blur-md border border-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide rounded-lg text-white/80">
+                            <%= closer.yearsExperience %> ans
+                        </span>
+                        <span class="bg-accent-600/90 backdrop-blur-md px-2.5 py-1 text-[10px] font-bold uppercase rounded-lg text-white">
+                            <%= closer.profileType %>
+                        </span>
+                    </div>
+
+                    <!-- Name overlay -->
+                    <div class="absolute bottom-4 left-5 right-5">
+                        <h3 class="text-xl font-bold text-white leading-tight"><%= closer.prenom %> <span class="text-white/50"><%= closer.nom.charAt(0) %>.</span></h3>
+                        <p class="text-accent-400 text-[11px] font-mono font-medium mt-0.5 uppercase tracking-wide"><%= closer.market %> · <%= closer.missionType %></p>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-5 flex flex-col flex-1">
+                    <!-- Stats row -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="stat-pill rounded-xl px-3 py-2.5">
+                            <p class="text-[9px] text-white/25 uppercase tracking-wider font-bold mb-0.5">Total Closé</p>
+                            <p class="text-white font-mono font-bold text-base"><%= closer.totalClosed ? closer.totalClosed.toLocaleString() : '0' %><span class="text-accent-400 text-sm">€</span></p>
+                        </div>
+                        <div class="stat-pill rounded-xl px-3 py-2.5">
+                            <p class="text-[9px] text-white/25 uppercase tracking-wider font-bold mb-0.5">Expertise</p>
+                            <div class="flex items-center gap-1 flex-wrap">
+                                <% if(closer.productTypes && closer.productTypes.length > 0) { %>
+                                    <span class="text-[11px] text-white/70 font-medium"><%= closer.productTypes[0] %></span>
+                                    <% if(closer.productTypes.length > 1) { %>
+                                        <span class="text-[10px] text-accent-400 font-mono font-bold">+<%= closer.productTypes.length - 1 %></span>
+                                    <% } %>
+                                <% } else { %>
+                                    <span class="text-[10px] text-white/15">—</span>
+                                <% } %>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="p-6 pt-2 flex flex-col flex-1 relative">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <h3 class="text-2xl font-bold text-white leading-none mb-1"><%= closer.prenom %> <%= closer.nom.charAt(0) %>.</h3>
-                                <p class="text-purple-400 text-xs font-mono uppercase"><%= closer.market %> • <%= closer.missionType %></p>
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-1.5 mb-4">
+                        <% if(closer.contractType && closer.contractType.length > 0) { %>
+                            <span class="px-2 py-0.5 bg-white/[0.04] border border-white/[0.06] rounded-md text-[10px] uppercase font-semibold text-white/35"><%= closer.contractType[0] %></span>
+                        <% } %>
+                        <span class="px-2 py-0.5 bg-white/[0.04] border border-white/[0.06] rounded-md text-[10px] uppercase font-semibold text-white/35"><%= closer.availability %></span>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="mt-auto pt-3 border-t border-white/[0.04] flex items-center justify-between">
+                        <span class="text-[11px] text-white/15 italic truncate max-w-[200px] font-light">"<%= closer.closingPhilosophy ? closer.closingPhilosophy.substring(0, 40) + '…' : '…' %>"</span>
+                        <div class="w-8 h-8 rounded-full bg-white/[0.04] flex items-center justify-center group-hover:bg-accent-600 transition-all duration-300 shrink-0 ml-3">
+                            <i class="fas fa-arrow-right text-[10px] text-white/30 group-hover:text-white transition-colors"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════ MODAL ═══════════════ -->
+            <div id="modal-<%= closer._id %>" class="modal-backdrop fixed inset-0 z-[100] flex items-center justify-center p-4" onclick="closeModal(event, 'modal-<%= closer._id %>')">
+                <div class="absolute inset-0 bg-surface-950/85 backdrop-blur-xl"></div>
+
+                <div class="modal-panel bg-surface-900 w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl border border-white/[0.06] shadow-2xl shadow-black/60 relative z-10 flex flex-col md:flex-row" onclick="event.stopPropagation()">
+
+                    <!-- Close btn -->
+                    <button onclick="closeModalDirect('modal-<%= closer._id %>')" class="absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.08] flex items-center justify-center transition-all z-20 group">
+                        <i class="fas fa-xmark text-white/40 group-hover:text-white text-sm"></i>
+                    </button>
+
+                    <!-- Left panel -->
+                    <div class="md:w-[38%] bg-white/[0.02] p-7 md:p-8 border-r border-white/[0.04] flex flex-col">
+                        <div class="w-full aspect-[4/5] rounded-2xl overflow-hidden mb-6 border border-white/[0.06] relative">
+                            <img src="<%= closer.photoUrl %>" class="w-full h-full object-cover" style="filter: saturate(0.9);">
+                            <div class="absolute inset-0 bg-gradient-to-t from-surface-900/50 to-transparent"></div>
+                        </div>
+
+                        <h2 class="text-2xl font-bold leading-tight"><%= closer.prenom %></h2>
+                        <h2 class="text-2xl font-bold text-accent-400 mb-5"><%= closer.nom.charAt(0) %>.</h2>
+
+                        <div class="space-y-3 mb-6 text-sm">
+                            <div class="flex justify-between py-2 border-b border-white/[0.04]">
+                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Expérience</span>
+                                <span class="font-bold text-white/80"><%= closer.yearsExperience %> ans</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-white/[0.04]">
+                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Total Closé</span>
+                                <span class="font-bold font-mono text-emerald-400"><%= closer.totalClosed ? closer.totalClosed.toLocaleString() : '0' %>€</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-white/[0.04]">
+                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Mission</span>
+                                <span class="font-semibold text-white/60 text-right text-xs"><%= closer.missionType %></span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-white/[0.04]">
+                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Disponibilité</span>
+                                <span class="font-semibold text-white/60"><%= closer.availability %></span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-white/[0.04]">
+                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Objectif</span>
+                                <span class="font-semibold text-white/60"><%= closer.desiredIncome ? closer.desiredIncome + '€/m' : 'N/C' %></span>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="bg-white/5 rounded-lg p-3 border border-white/5">
-                                <p class="text-[9px] text-gray-500 uppercase tracking-wide mb-1">Total Closé</p>
-                                <p class="text-white font-mono font-bold text-lg"><%= closer.totalClosed ? closer.totalClosed.toLocaleString() : '0' %>€</p>
+                        <!-- Contact -->
+                        <div class="mt-auto space-y-2.5">
+                            <% if (user) { %>
+                                <div onclick="event.stopPropagation(); revealContact(this)" class="reveal-btn cursor-pointer bg-white border border-white/10 py-3.5 rounded-xl font-bold text-center transition-all text-xs uppercase tracking-wide flex items-center justify-center gap-2.5 relative overflow-hidden group/r">
+                                    <i class="far fa-envelope text-accent-600 text-sm z-10"></i>
+                                    <span class="contact-val text-surface-900 z-10 truncate max-w-[170px] transition-all duration-500" style="filter:blur(5px)"><%= closer.email %></span>
+                                    <div class="reveal-cover absolute inset-0 flex items-center justify-center bg-white z-20">
+                                        <span class="text-[10px] font-bold text-surface-900/60 uppercase tracking-widest flex items-center gap-1.5">
+                                            <i class="fas fa-eye text-accent-600"></i> Voir l'email
+                                        </span>
+                                    </div>
+                                </div>
+                                <div onclick="event.stopPropagation(); revealContact(this)" class="reveal-btn cursor-pointer bg-white/[0.04] border border-white/[0.08] py-3.5 rounded-xl font-bold text-center hover:bg-white/[0.07] transition-all text-xs uppercase tracking-wide flex items-center justify-center gap-2.5 relative overflow-hidden group/r">
+                                    <i class="fas fa-phone text-accent-400 text-sm z-10"></i>
+                                    <span class="contact-val text-white/80 z-10 transition-all duration-500" style="filter:blur(5px)"><%= closer.telephone %></span>
+                                    <div class="reveal-cover absolute inset-0 flex items-center justify-center bg-surface-900/95 z-20">
+                                        <span class="text-[10px] font-bold text-white/40 uppercase tracking-widest flex items-center gap-1.5">
+                                            <i class="fas fa-eye text-accent-400"></i> Voir le tél
+                                        </span>
+                                    </div>
+                                </div>
+                            <% } else { %>
+                                <a href="/register-choice" class="block bg-white/[0.04] text-white/30 border border-white/[0.06] py-3.5 rounded-xl font-bold text-center hover:bg-accent-600 hover:text-white hover:border-accent-500 transition-all duration-300 text-xs uppercase tracking-wide">
+                                    <i class="fas fa-lock mr-2"></i> Inscrivez-vous pour contacter
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Right panel -->
+                    <div class="md:w-[62%] p-7 md:p-8 overflow-y-auto">
+                        <!-- Tags -->
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            <span class="bg-accent-600 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wide"><%= closer.profileType %></span>
+                            <span class="bg-white/[0.06] border border-white/[0.08] px-3 py-1.5 rounded-lg text-[11px] uppercase tracking-wide text-white/60"><%= closer.market %></span>
+                            <% if(closer.productTypes) { %>
+                                <% closer.productTypes.forEach(type => { %>
+                                    <span class="border border-white/[0.08] px-3 py-1.5 rounded-lg text-[11px] uppercase text-white/40"><%= type %></span>
+                                <% }) %>
+                            <% } %>
+                        </div>
+
+                        <!-- Philosophy -->
+                        <div class="mb-8">
+                            <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 mb-4 flex items-center gap-2">
+                                <span class="w-4 h-px bg-accent-500"></span> Vision du Closing
+                            </h3>
+                            <div class="bg-white/[0.02] border border-white/[0.05] p-6 rounded-2xl relative">
+                                <div class="absolute top-4 left-5 text-white/[0.03] text-5xl leading-none font-serif">"</div>
+                                <p class="text-white/50 leading-relaxed text-sm italic pl-4 border-l-2 border-accent-500/30">
+                                    <%= closer.closingPhilosophy || 'Non renseigné.' %>
+                                </p>
                             </div>
-                            <div class="bg-white/5 rounded-lg p-3 border border-white/5 overflow-hidden">
-                                <p class="text-[9px] text-gray-500 uppercase tracking-wide mb-1">Expertise</p>
-                                <div class="flex flex-wrap gap-1">
-                                    <% if(closer.productTypes && closer.productTypes.length > 0) { %>
-                                        <span class="text-[10px] text-gray-300 font-bold"><%= closer.productTypes[0] %></span>
-                                        <% if(closer.productTypes.length > 1) { %>
-                                            <span class="text-[10px] text-gray-500">+<%= closer.productTypes.length - 1 %></span>
-                                        <% } %>
+                        </div>
+
+                        <!-- Details grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-file-signature text-accent-400/50 text-[10px]"></i> Contrats acceptés
+                                </h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <% if(closer.contractType) { %>
+                                        <% closer.contractType.forEach(c => { %>
+                                            <span class="text-white/60 text-xs bg-white/[0.05] border border-white/[0.06] px-3 py-1.5 rounded-lg font-medium"><%= c %></span>
+                                        <% }) %>
                                     <% } else { %>
-                                        <span class="text-[9px] text-gray-500">-</span>
+                                        <span class="text-white/20 text-xs">—</span>
                                     <% } %>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-2 mb-6">
-                            <% if(closer.contractType && closer.contractType.length > 0) { %>
-                                <span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[9px] uppercase font-bold text-gray-300">
-                                    <%= closer.contractType[0] %>
-                                </span>
-                            <% } %>
-                            <span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[9px] uppercase font-bold text-gray-300">
-                                <%= closer.availability %>
-                            </span>
-                        </div>
-
-                        <div class="mt-auto pt-4 border-t border-white/5 flex justify-between items-center group-hover:opacity-100 transition-opacity">
-                            <span class="text-xs text-gray-500 italic truncate max-w-[180px]">"<%= closer.closingPhilosophy ? closer.closingPhilosophy.substring(0, 25) + '...' : '...' %>"</span>
-                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-purple-600 transition-colors">
-                                <i class="fas fa-plus text-xs text-white"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="modal-<%= closer._id %>" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-                    <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('modal-<%= closer._id %>')"></div>
-                    
-                    <div class="bg-[#0a0a0a] w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl border border-white/10 shadow-2xl relative z-10 flex flex-col md:flex-row modal-enter">
-                        
-                        <button onclick="closeModal('modal-<%= closer._id %>')" class="absolute top-4 right-4 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-black transition z-20 border border-white/10">
-                            <i class="fas fa-times"></i>
-                        </button>
-
-                        <div class="md:w-1/3 bg-white/5 p-8 border-r border-white/5 flex flex-col">
-                            <div class="w-full aspect-square rounded-2xl overflow-hidden mb-6 border border-white/10 relative group">
-                                <img src="<%= closer.photoUrl %>" class="w-full h-full object-cover">
-                            </div>
-                            
-                            <h2 class="text-3xl font-bold mb-1"><%= closer.prenom %></h2>
-                            <h2 class="text-3xl font-bold text-purple-500 mb-4"><%= closer.nom.charAt(0) %>.</h2>
-                            
-                            <div class="space-y-4 mb-8">
-                                <div class="flex justify-between border-b border-white/10 pb-2">
-                                    <span class="text-xs text-gray-500 uppercase">Expérience</span>
-                                    <span class="text-sm font-bold"><%= closer.yearsExperience %> ans</span>
-                                </div>
-                                <div class="flex justify-between border-b border-white/10 pb-2">
-                                    <span class="text-xs text-gray-500 uppercase">Total Closé</span>
-                                    <span class="text-sm font-bold font-mono text-green-400"><%= closer.totalClosed ? closer.totalClosed.toLocaleString() : '0' %>€</span>
-                                </div>
-                                <div class="flex justify-between border-b border-white/10 pb-2">
-                                    <span class="text-xs text-gray-500 uppercase">Mission</span>
-                                    <span class="text-sm font-bold text-right"><%= closer.missionType %></span>
-                                </div>
-                                <div class="flex justify-between border-b border-white/10 pb-2">
-                                    <span class="text-xs text-gray-500 uppercase">Dispo</span>
-                                    <span class="text-sm font-bold"><%= closer.availability %></span>
-                                </div>
-                                <div class="flex justify-between border-b border-white/10 pb-2">
-                                    <span class="text-xs text-gray-500 uppercase">Souhaité</span>
-                                    <span class="text-sm font-bold"><%= closer.desiredIncome ? closer.desiredIncome + '€/m' : 'N/C' %></span>
-                                </div>
-                            </div>
-
-                            <div class="mt-auto space-y-3">
-                                <% if (user) { %>
-                                    
-                                    <div onclick="event.stopPropagation(); revealContact(this)" class="cursor-pointer bg-gray-100 border border-white/10 py-4 rounded-xl font-bold text-center hover:bg-white transition text-xs uppercase tracking-wide flex items-center justify-center gap-2 relative overflow-hidden group">
-                                        <i class="far fa-envelope text-purple-600 z-10"></i>
-                                        
-                                        <span class="contact-text blur-md select-none transition-all duration-300 truncate max-w-[150px] text-gray-900 z-0">
-                                            <%= closer.email %>
-                                        </span>
-                                        
-                                        <div class="reveal-overlay absolute inset-0 flex items-center justify-center bg-gray-200/80 group-hover:bg-gray-100/50 backdrop-blur-[2px] transition-all z-20">
-                                            <span class="text-[9px] font-black text-gray-800 uppercase tracking-widest">
-                                                <i class="fas fa-eye mr-1"></i> Révéler Email
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div onclick="event.stopPropagation(); revealContact(this)" class="cursor-pointer bg-white/5 border border-white/20 py-4 rounded-xl font-bold text-center hover:bg-white/10 transition text-xs uppercase tracking-wide flex items-center justify-center gap-2 relative overflow-hidden group">
-                                        <i class="fas fa-phone text-purple-400 z-10"></i>
-                                        
-                                        <span class="contact-text blur-md select-none transition-all duration-300 text-white z-0">
-                                            <%= closer.telephone %>
-                                        </span>
-                                        
-                                        <div class="reveal-overlay absolute inset-0 flex items-center justify-center bg-black/80 group-hover:bg-black/60 backdrop-blur-[2px] transition-all z-20">
-                                            <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">
-                                                <i class="fas fa-eye mr-1"></i> Révéler Tél
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                <% } else { %>
-                                    <a href="/register-choice" class="bg-white/10 text-gray-400 border border-white/5 py-4 rounded-xl font-bold text-center hover:bg-purple-600 hover:text-white transition flex items-center justify-center gap-2">
-                                        <i class="fas fa-lock"></i> Voir Contact
-                                    </a>
-                                <% } %>
-                            </div>
-                        </div>
-
-                        <div class="md:w-2/3 p-8">
-                            
-                            <div class="flex flex-wrap gap-2 mb-8">
-                                <span class="bg-purple-600 px-3 py-1 rounded text-xs font-bold uppercase"><%= closer.profileType %></span>
-                                <span class="bg-white/10 px-3 py-1 rounded text-xs uppercase"><%= closer.market %></span>
-                                <% if(closer.productTypes) { %>
-                                    <% closer.productTypes.forEach(type => { %>
-                                        <span class="border border-white/20 px-3 py-1 rounded text-xs uppercase text-gray-300"><%= type %></span>
-                                    <% }) %>
-                                <% } %>
-                            </div>
-
-                            <div class="mb-8">
-                                <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-purple-400">
-                                    <i class="fas fa-brain"></i> Vision du Closing
+                            <div>
+                                <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-building text-accent-400/50 text-[10px]"></i> Anciens Clients
                                 </h3>
-                                <div class="bg-white/5 p-6 rounded-2xl border-l-4 border-purple-500 italic text-gray-300 leading-relaxed relative">
-                                    <i class="fas fa-quote-left absolute top-4 left-4 text-white/5 text-4xl -z-10"></i>
-                                    "<%= closer.closingPhilosophy || 'Non renseigné.' %>"
-                                </div>
+                                <p class="text-white/50 text-sm leading-relaxed"><%= closer.pastClients || 'Confidentiel' %></p>
                             </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                <div>
-                                    <h3 class="text-sm font-bold mb-3 uppercase text-gray-500"><i class="fas fa-file-contract mr-2"></i>Contrats acceptés</h3>
-                                    <div class="flex flex-wrap gap-2">
-                                        <% if(closer.contractType) { %>
-                                            <% closer.contractType.forEach(c => { %>
-                                                <span class="text-white text-xs bg-white/10 px-2 py-1 rounded"><%= c %></span>
-                                            <% }) %>
-                                        <% } %>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h3 class="text-sm font-bold mb-3 uppercase text-gray-500"><i class="fas fa-users mr-2"></i>Anciens Clients</h3>
-                                    <p class="text-white text-sm leading-relaxed"><%= closer.pastClients || 'Confidentiel / Non spécifié' %></p>
-                                </div>
-                            </div>
-
-                            <% if (closer.videoUrl) { %>
-                                <div>
-                                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-purple-400">
-                                        <i class="fas fa-video"></i> Démo / Présentation
-                                    </h3>
-                                    <a href="<%= closer.videoUrl %>" target="_blank" class="block w-full bg-black/40 border border-white/10 rounded-2xl p-6 hover:border-purple-500 hover:bg-purple-500/10 transition group flex items-center justify-center gap-4 relative overflow-hidden">
-                                        <div class="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
-                                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-black group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(255,255,255,0.5)] z-10">
-                                            <i class="fas fa-play ml-1"></i>
-                                        </div>
-                                        <div class="z-10">
-                                            <p class="font-bold text-white">Regarder la vidéo</p>
-                                            <p class="text-xs text-gray-500 truncate max-w-[200px]"><%= closer.videoUrl %></p>
-                                        </div>
-                                    </a>
-                                </div>
-                            <% } %>
-
                         </div>
+
+                        <!-- Video -->
+                        <% if (closer.videoUrl) { %>
+                            <div>
+                                <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 mb-4 flex items-center gap-2">
+                                    <span class="w-4 h-px bg-accent-500"></span> Vidéo de présentation
+                                </h3>
+                                <a href="<%= closer.videoUrl %>" target="_blank" rel="noopener"
+                                   class="flex items-center gap-5 bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 hover:border-accent-500/30 hover:bg-accent-600/5 transition-all duration-300 group/v">
+                                    <div class="w-14 h-14 rounded-2xl bg-accent-600/10 border border-accent-500/20 flex items-center justify-center shrink-0 group-hover/v:bg-accent-600 group-hover/v:border-accent-500 transition-all duration-300">
+                                        <i class="fas fa-play text-accent-400 group-hover/v:text-white ml-0.5 transition-colors"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-sm text-white/80 group-hover/v:text-white transition-colors">Regarder la démo</p>
+                                        <p class="text-xs text-white/20 truncate"><%= closer.videoUrl %></p>
+                                    </div>
+                                </a>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
-
-            <% }) %>
-        </div>
-        
-        <% if (closers.length === 0) { %>
-            <div class="text-center py-24 opacity-40">
-                <i class="fas fa-ghost text-6xl mb-4 text-white/20"></i>
-                <p class="text-xl font-light">Aucun talent trouvé.</p>
-                <p class="text-sm text-gray-500 mt-2">Essayez d'ajuster vos filtres.</p>
-                <a href="/" class="inline-block mt-4 text-purple-400 hover:text-white border border-purple-500/30 px-4 py-2 rounded-full text-xs uppercase tracking-wide transition">Réinitialiser</a>
             </div>
-        <% } %>
+        <% }) %>
+    </div>
 
-    </main>
+    <!-- Empty state -->
+    <% if (closers.length === 0) { %>
+        <div class="text-center py-28">
+            <div class="w-20 h-20 rounded-3xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-magnifying-glass text-2xl text-white/10"></i>
+            </div>
+            <p class="text-lg font-semibold text-white/20 mb-2">Aucun talent trouvé</p>
+            <p class="text-sm text-white/10 mb-6">Essayez d'ajuster vos filtres de recherche.</p>
+            <a href="/" class="inline-flex items-center gap-2 text-accent-400 hover:text-white border border-accent-500/20 hover:border-accent-500 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300">
+                <i class="fas fa-rotate-left text-[10px]"></i> Réinitialiser
+            </a>
+        </div>
+    <% } %>
+</main>
 
-    <script>
-        // Gestion des Modales
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden'; 
-        }
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="border-t border-white/[0.04] py-8">
+    <div class="max-w-[1400px] mx-auto px-5 md:px-8 flex flex-col md:flex-row items-center justify-between gap-3">
+        <span class="text-[11px] text-white/15 font-medium tracking-wide">© 2025 The Closers. Tous droits réservés.</span>
+        <div class="flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/60 animate-pulse"></span>
+            <span class="text-[11px] text-white/20 font-medium">Plateforme active</span>
+        </div>
+    </div>
+</footer>
 
-        function closeModal(modalId) {
-            // Stop propagation
-            if (event.target !== event.currentTarget && event.target.tagName !== 'BUTTON' && !event.target.classList.contains('fa-times')) return;
+<script>
+    // --- Filter toggle ---
+    function toggleFilters() {
+        const panel = document.getElementById('filterPanel');
+        const chevron = document.getElementById('filterChevron');
+        panel.classList.toggle('open');
+        chevron.style.transform = panel.classList.contains('open') ? 'rotate(180deg)' : '';
+    }
 
-            const modal = document.getElementById(modalId);
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = 'auto';
-        }
+    // Auto-open filters if any advanced filter is active
+    (() => {
+        const params = new URLSearchParams(window.location.search);
+        const advancedKeys = ['profileType','market','yearsExperience','missionType','totalClosed','productTypes'];
+        if (advancedKeys.some(k => params.get(k))) toggleFilters();
+    })();
 
-        // Révélation Contact (Effet "Scratch card" digital)
-        function revealContact(element) {
-            const overlay = element.querySelector('.reveal-overlay');
-            const textSpan = element.querySelector('.contact-text');
-
-            if (overlay) {
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.remove(), 300); // Fade out
-                
-                textSpan.classList.remove('blur-md', 'select-none');
-                textSpan.classList.add('select-all');
-                textSpan.classList.remove('max-w-[150px]');
+    // --- Custom checkbox tag chips ---
+    document.querySelectorAll('.tag-chip input[type="checkbox"]').forEach(cb => {
+        const label = cb.closest('.tag-chip');
+        const updateStyle = () => {
+            if (cb.checked) {
+                label.style.background = 'rgba(139,92,246,0.12)';
+                label.style.borderColor = 'rgba(139,92,246,0.35)';
+                label.querySelector('span').style.color = 'rgba(255,255,255,0.85)';
+                label.querySelector('i').style.color = 'rgba(139,92,246,0.7)';
+            } else {
+                label.style.background = '';
+                label.style.borderColor = '';
+                label.querySelector('span').style.color = '';
+                label.querySelector('i').style.color = '';
             }
+        };
+        cb.addEventListener('change', updateStyle);
+        updateStyle();
+    });
+
+    // --- Modal ---
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal(e, id) {
+        if (e.target === e.currentTarget || e.target.closest('.modal-backdrop > .absolute')) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = '';
         }
-    </script>
+    }
+    function closeModalDirect(id) {
+        document.getElementById(id).classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    // ESC to close
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-backdrop.active').forEach(m => {
+                m.classList.remove('active');
+            });
+            document.body.style.overflow = '';
+        }
+    });
+
+    // --- Reveal contact ---
+    function revealContact(el) {
+        el.classList.add('revealed');
+    }
+</script>
 
 </body>
 </html>
