@@ -110,8 +110,11 @@ app.get('/', async (req, res) => {
 
     // 7. Type de Mission
     // Le formulaire envoie "missionType", mais dans ta DB c'est surement "contractType"
+    // 7. Type de Mission
     if (req.query.missionType) {
-        query.contractType = req.query.missionType;
+        // AVANT (FAUX) : query.contractType = req.query.missionType; 
+        // MAINTENANT (JUSTE) :
+        query.missionType = req.query.missionType;
     }
     let sort = req.query.sort === 'best' ? { totalClosed: -1 } : { createdAt: -1 };
 
@@ -163,37 +166,31 @@ app.get('/register/closer', (req, res) => res.render('auth/register-closer'));
 // Dans server.js
 app.post('/register/closer', upload.single('photo'), async (req, res) => {
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const { email, password } = req.body;
+
+        // --- FIX : On vérifie d'abord si l'email existe ---
+        const existingUser = await Closer.findOne({ email }) || await Company.findOne({ email });
+        if (existingUser) {
+            return res.send("<h1>Erreur</h1><p>Cet email est déjà utilisé.</p><a href='/register/closer'>Réessayer</a>");
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
         const newUser = await Closer.create({
-            ...req.body, // Ça prend tous les champs (nom, prenom, market, etc.)
+            ...req.body, 
             password: hashedPassword,
-            // Pour les checkbox multiples (productTypes), parfois Express renvoie une string si un seul choix.
-            // Cette ligne assure que c'est toujours un tableau :
+            // Sécurité pour les checkbox multiples
             productTypes: [].concat(req.body.productTypes || []),
             contractType: [].concat(req.body.contractType || []),
-            
             photoUrl: req.file ? req.file.location : 'https://via.placeholder.com/150'
         });
-        // 2. AUTO-LOGIN : On remplit la session exactement comme dans la route /login
-        req.session.user = { 
-            id: newUser._id, 
-            role: 'closer', 
-            name: newUser.prenom 
-        };
 
-        // 3. On sauvegarde la session pour être sûr qu'elle existe avant la redirection
-        req.session.save((err) => {
-            if (err) {
-                console.error("Erreur de sauvegarde session", err);
-                return res.redirect('/login'); // Fallback au cas où
-            }
-            // 4. Direction le Dashboard direct ! 🚀
-            res.redirect('/dashboard');
-        });
+        req.session.user = { id: newUser._id, role: 'closer', name: newUser.prenom };
+        req.session.save(() => res.redirect('/dashboard'));
 
     } catch (e) { 
-        console.log(e);
-        res.send("Erreur inscription Closer : " + e.message); 
+        console.error(e);
+        res.send("Erreur technique : " + e.message); 
     }
 });
 // 5. LOGIN

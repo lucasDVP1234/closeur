@@ -303,6 +303,20 @@
             const currentSlide = document.querySelector(`.step-content[data-step="${currentStep}"]`);
             const inputs = currentSlide.querySelectorAll('input[required], textarea[required], select[required]');
             let isValid = true;
+            // --- 2. NOUVEAU : Validation des Checkboxes (Pour éviter les vides) ---
+            // On regarde s'il y a des checkboxes sur cette étape (ex: Étape 3 et 4)
+            const checkboxes = currentSlide.querySelectorAll('input[type="checkbox"]');
+            
+            if (checkboxes.length > 0) {
+                // On vérifie si au moins UNE case est cochée
+                const isAnyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                
+                if (!isAnyChecked) {
+                    isValid = false;
+                    // Petit effet visuel pour dire "Hey, choisis un truc !"
+                    alert("Veuillez sélectionner au moins une option."); 
+                }
+            }
             
             inputs.forEach(input => {
                 if (!input.value) {
