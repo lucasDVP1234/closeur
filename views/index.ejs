@@ -621,7 +621,16 @@
 
     // --- Reveal contact ---
     function revealContact(el) {
+        // 1. Lance l'animation du bouton (le cache disparaît)
         el.classList.add('revealed');
+        
+        // 2. Trouve le texte flouté à l'intérieur
+        const textSpan = el.querySelector('.contact-val');
+        
+        // 3. Supprime le style de flou inline pour rendre le texte net
+        if (textSpan) {
+            textSpan.style.filter = 'none';
+        }
     }
 </script>
 
