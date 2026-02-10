@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cockpit - THE CLOSERS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #fff; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .custom-checkbox:checked + div {
+            background-color: rgba(147, 51, 234, 0.2);
+            border-color: #9333ea;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[url('https://grainy-gradients.vercel.app/noise.svg')] pb-20">
+
+    <nav class="border-b border-white/5 py-4 bg-[#050505]/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-8 bg-purple-600 rounded-full shadow-[0_0_15px_rgba(147,51,234,0.8)]"></div>
+                <h1 class="text-xl font-bold tracking-widest text-white">THE <span class="text-purple-500">CLOSERS</span> <span class="text-xs text-gray-600 bg-white/5 px-2 py-1 rounded ml-2 border border-white/5">COCKPIT</span></h1>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <a href="/" class="text-gray-400 hover:text-white text-sm transition flex items-center gap-2">
+                    <i class="fas fa-globe"></i> Voir l'annuaire
+                </a>
+                <div class="h-6 w-px bg-white/10"></div>
+                <a href="/logout" class="text-xs text-red-400 border border-red-500/20 px-4 py-2 rounded-full hover:bg-red-500/10 transition">
+                    <i class="fas fa-power-off mr-1"></i> DÉCONNEXION
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 mt-10">
+        
+        <div class="mb-10 flex flex-col md:flex-row justify-between items-end gap-4">
+            <div>
+                <h2 class="text-4xl font-bold mb-2">Bon retour, <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400"><%= closer.prenom %></span>.</h2>
+                <p class="text-gray-500">Gérez votre fiche profil et vos disponibilités.</p>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl px-6 py-3 flex items-center gap-4">
+                <div class="text-right">
+                    <p class="text-xs text-gray-500 uppercase font-bold">Statut Actuel</p>
+                    <p class="text-green-400 font-bold"><%= closer.availability %></p>
+                </div>
+                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-1 space-y-6">
+                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">Aperçu Public</h3>
+                
+                <div class="glass-panel rounded-3xl overflow-hidden border-2 border-white/5 relative group">
+                    <div class="h-96 w-full relative">
+                        <img src="<%= closer.photoUrl %>" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <div class="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+                        
+                        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1 rounded-full border border-white/10">
+                            <span class="text-[10px] font-bold uppercase text-white"><%= closer.profileType %></span>
+                        </div>
+
+                        <div class="absolute top-4 left-4 flex flex-col gap-2">
+                            <% if(closer.yearsExperience > 0) { %>
+                                <div class="bg-purple-500/80 backdrop-blur px-3 py-1 rounded-full border border-white/10 shadow-lg shadow-purple-500/20">
+                                    <span class="text-[10px] font-bold text-white"><%= closer.yearsExperience %> ans d'exp.</span>
+                                </div>
+                            <% } %>
+                            <% if(closer.totalClosed > 0) { %>
+                                <div class="bg-green-500/80 backdrop-blur px-3 py-1 rounded-full border border-white/10 shadow-lg shadow-green-500/20">
+                                    <span class="text-[10px] font-bold text-white"><%= closer.totalClosed %>€ Closés</span>
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <h2 class="text-2xl font-bold mb-1"><%= closer.prenom %> <%= closer.nom %></h2>
+                            <p class="text-purple-400 font-mono text-xs mb-3">
+                                <%= closer.market %> • <%= closer.missionType %>
+                            </p>
+                            
+                            <div class="flex flex-wrap gap-2">
+                                <% closer.productTypes.slice(0, 4).forEach(type => { %>
+                                    <span class="text-[9px] uppercase px-2 py-1 bg-white/20 rounded backdrop-blur-sm border border-white/10"><%= type %></span>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-purple-500/20 bg-purple-500/5">
+                    <h4 class="font-bold text-purple-400 mb-2 text-sm">Votre Philosophie</h4>
+                    <p class="text-xs text-gray-300 italic leading-relaxed">
+                        "<%= closer.closingPhilosophy || 'Non définie...' %>"
+                    </p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="glass-panel rounded-3xl p-8 md:p-10 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-50 pointer-events-none"></div>
+
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
+                            <h3 class="text-2xl font-bold">Édition du Profil</h3>
+                            <button form="updateForm" class="bg-white text-black hover:bg-purple-500 hover:text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg flex items-center gap-2 text-sm uppercase tracking-wide">
+                                <i class="fas fa-save"></i> Sauvegarder
+                            </button>
+                        </div>
+
+                        <form id="updateForm" action="/dashboard/update" method="POST" enctype="multipart/form-data" class="space-y-8">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div class="col-span-1">
+                                    <div class="relative w-full aspect-square bg-black/50 border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center hover:border-purple-500 hover:bg-purple-500/10 transition cursor-pointer group overflow-hidden">
+                                        <input type="file" name="photo" class="absolute inset-0 opacity-0 cursor-pointer z-20">
+                                        <img src="<%= closer.photoUrl %>" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-30 transition">
+                                        <i class="fas fa-camera text-2xl mb-2 text-white z-10"></i>
+                                        <span class="text-[10px] text-gray-400 z-10">Changer photo</span>
+                                    </div>
+                                </div>
+                                <div class="col-span-2 space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Prénom</label>
+                                            <input type="text" name="prenom" value="<%= closer.prenom %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Nom</label>
+                                            <input type="text" name="nom" value="<%= closer.nom %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Email</label>
+                                            <input type="email" value="<%= closer.email %>" disabled class="w-full bg-black/20 border border-white/5 rounded-xl p-3 text-gray-500 cursor-not-allowed">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Téléphone</label>
+                                            <input type="text" name="telephone" value="<%= closer.telephone %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="border-white/5">
+
+                            <div>
+                                <h4 class="text-sm font-bold text-purple-400 mb-4 uppercase tracking-wider">Expertise & Positionnement</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Profil Principal</label>
+                                        <select name="profileType" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                            <option value="Closeur" <%= closer.profileType === 'Closeur' ? 'selected' : '' %>>Closeur</option>
+                                            <option value="Commercial" <%= closer.profileType === 'Commercial' ? 'selected' : '' %>>Commercial</option>
+                                            <option value="Setter" <%= closer.profileType === 'Setter' ? 'selected' : '' %>>Setter</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Marché Cible</label>
+                                        <select name="market" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                            <option value="B2C" <%= closer.market === 'B2C' ? 'selected' : '' %>>B2C</option>
+                                            <option value="B2B" <%= closer.market === 'B2B' ? 'selected' : '' %>>B2B</option>
+                                            <option value="Les deux" <%= closer.market === 'Les deux' ? 'selected' : '' %>>Les deux</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Type de Mission</label>
+                                        <select name="missionType" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                            <option value="Mission (Webi/Challenge)" <%= closer.missionType === 'Mission (Webi/Challenge)' ? 'selected' : '' %>>Mission (Webi/Challenge)</option>
+                                            <option value="Long terme" <%= closer.missionType === 'Long terme' ? 'selected' : '' %>>Long terme</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Années d'Expérience</label>
+                                        <input type="number" name="yearsExperience" value="<%= closer.yearsExperience %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Total Closé (en €)</label>
+                                        <input type="number" name="totalClosed" value="<%= closer.totalClosed %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="mb-6">
+                                    <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Produits maîtrisés</label>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <% ['Infoproduit', 'SaaS', 'High Ticket', 'Services Agency', 'B2B Tech'].forEach(type => { %>
+                                            <label class="cursor-pointer relative">
+                                                <input type="checkbox" name="productTypes" value="<%= type %>" class="custom-checkbox hidden" <%= closer.productTypes && closer.productTypes.includes(type) ? 'checked' : '' %>>
+                                                <div class="bg-black/40 border border-white/10 rounded-lg p-2 text-center text-xs text-gray-300 hover:bg-white/5 transition">
+                                                    <%= type %>
+                                                </div>
+                                            </label>
+                                        <% }) %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="border-white/5">
+
+                            <div>
+                                <h4 class="text-sm font-bold text-purple-400 mb-4 uppercase tracking-wider">Vos Conditions</h4>
+                                
+                                <div class="grid grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Disponibilité</label>
+                                        <select name="availability" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                            <option value="Full Time" <%= closer.availability === 'Full Time' ? 'selected' : '' %>>Full Time 🔥</option>
+                                            <option value="Mi-temps" <%= closer.availability === 'Mi-temps' ? 'selected' : '' %>>Mi-temps</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Revenu souhaité /mois (€)</label>
+                                        <input type="number" name="desiredIncome" value="<%= closer.desiredIncome %>" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="mb-6">
+                                    <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Type de contrat accepté</label>
+                                    <div class="flex flex-wrap gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" name="contractType" value="100% Commission" class="accent-purple-500" <%= closer.contractType && closer.contractType.includes('100% Commission') ? 'checked' : '' %>>
+                                            <span class="text-sm">100% Commission</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" name="contractType" value="Fixe + Commission" class="accent-purple-500" <%= closer.contractType && closer.contractType.includes('Fixe + Commission') ? 'checked' : '' %>>
+                                            <span class="text-sm">Fixe + Commission</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="border-white/5">
+
+                            <div>
+                                <h4 class="text-sm font-bold text-purple-400 mb-4 uppercase tracking-wider">Track Record & Vision</h4>
+                                
+                                <div class="grid grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Lien Vidéo (Loom/Youtube)</label>
+                                        <input type="url" name="videoUrl" value="<%= closer.videoUrl %>" placeholder="https://..." class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Anciens Clients (Liste)</label>
+                                        <input type="text" name="pastClients" value="<%= closer.pastClients %>" placeholder="Ex: Client A, Client B..." class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] uppercase text-gray-500 font-bold mb-2">Votre vision (Un bon closeur c'est...)</label>
+                                    <textarea name="closingPhilosophy" rows="3" class="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:border-purple-500 outline-none"><%= closer.closingPhilosophy %></textarea>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
