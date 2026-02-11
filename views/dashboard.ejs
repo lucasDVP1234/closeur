@@ -111,28 +111,35 @@
 
 <!-- ═══════════════ NAV ═══════════════ -->
 <nav class="sticky top-0 z-50 bg-surface-950 backdrop-blur-2xl border-b border-white/[0.04]">
-    <div class="max-w-[1400px] mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-            <a href="/" class="group flex items-center gap-3 select-none">
-                <div class="relative w-8 h-8 rounded-lg bg-accent-600 flex items-center justify-center overflow-hidden group-hover:rounded-xl transition-all duration-300">
+    <div class="max-w-[1400px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+        
+        <div class="flex items-center gap-2 md:gap-4">
+            <a href="/" class="group flex items-center gap-2 md:gap-3 select-none">
+                <div class="relative w-8 h-8 rounded-lg bg-accent-600 flex items-center justify-center overflow-hidden group-hover:rounded-xl transition-all duration-300 shrink-0">
                     <span class="text-white font-black text-sm tracking-tight">SFC</span>
                     <div class="absolute inset-0 bg-white/70 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                 </div>
-                <span class="text-sm font-bold tracking-[0.2em] uppercase text-white/80 group-hover:text-white transition-colors">SEFAIRECLOSER.COM</span>
+                <span class="text-[10px] md:text-sm font-bold tracking-normal md:tracking-[0.2em] uppercase text-white/80 group-hover:text-white transition-colors whitespace-nowrap">
+                    SEFAIRECLOSER.COM
+                </span>
             </a>
-            <div class="hidden sm:flex items-center gap-1.5 bg-accent-600/10 border border-accent-500/70 px-2.5 py-1 rounded-lg">
-                <span class="w-1.5 h-1.5 bg-accent-400 rounded-full"></span>
+
+            <div class="hidden sm:flex items-center gap-1.5 bg-accent-600/10 border border-accent-500/70 px-2.5 py-1 rounded-lg shrink-0">
+                <span class="w-1.5 h-1.5 bg-accent-400 rounded-full animate-pulse"></span>
                 <span class="text-[10px] font-bold uppercase tracking-widest text-accent-400">Cockpit</span>
             </div>
         </div>
 
-        <div class="flex items-center gap-3">
-            <a href="/" class="flex items-center gap-2 text-white/70 hover:text-white text-xs font-medium transition-colors px-3 py-2 rounded-lg hover:bg-white/[0.05]">
-                <i class="fas fa-globe text-[10px]"></i> <span class="hidden sm:inline">Annuaire</span>
+        <div class="flex items-center gap-2 md:gap-3">
+            <a href="/" class="flex items-center gap-2 text-white/70 hover:text-white text-xs font-medium transition-colors px-2 md:px-3 py-2 rounded-lg hover:bg-white/[0.05]">
+                <i class="fas fa-globe text-xs md:text-[10px]"></i> 
+                <span class="hidden sm:inline uppercase tracking-wide">Annuaire</span>
             </a>
+            
             <div class="w-px h-5 bg-white/[0.06]"></div>
-            <a href="/logout" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/[0.04] hover:bg-red-500/15 border border-white/[0.06] hover:border-red-500/30 transition-all duration-300 group">
-                <i class="fas fa-arrow-right-from-bracket text-[11px] text-white/30 group-hover:text-red-400 transition-colors"></i>
+            
+            <a href="/logout" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-white/[0.04] hover:bg-red-500/15 border border-white/[0.06] hover:border-red-500/30 transition-all duration-300 group shrink-0">
+                <i class="fas fa-arrow-right-from-bracket text-[10px] md:text-[11px] text-white/30 group-hover:text-red-400 transition-colors"></i>
             </a>
         </div>
     </div>
