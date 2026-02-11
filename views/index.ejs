@@ -130,6 +130,7 @@
         @media (max-width: 768px) {
             .hero-title { font-size: 2.2rem !important; line-height: 1.1 !important; }
         }
+        
     </style>
 </head>
 <body>
@@ -178,9 +179,9 @@
         </p>
         <h2 class="hero-title text-[clamp(2.2rem,5.5vw,4.5rem)] font-extrabold leading-[1.05] tracking-tight mb-5">
             Trouvez le closer<br>
-            <span class="text-white/25">qui va tout changer.</span>
+            <span class="text-white/50">qui va tout changer.</span>
         </h2>
-        <p class="text-white/35 text-base md:text-lg max-w-xl font-light leading-relaxed">
+        <p class="text-white/70 text-base md:text-lg max-w-xl font-light leading-relaxed">
             Parcourez notre répertoire de closers vérifiés. Filtrez par expertise, expérience et spécialisation pour trouver le talent parfait.
         </p>
     </div>
@@ -194,10 +195,10 @@
             <div class="flex-1 relative">
                 <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-sm"></i>
                 <input type="text" name="product" placeholder="Rechercher un produit, une niche, un mot-clé…" value="<%= filters.product || '' %>"
-                    class="w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl py-4 pl-11 pr-5 text-white placeholder-white/20 text-sm font-medium transition-all duration-300 hover:border-white/15">
+                    class="w-full bg-white/[0.03] border border-white/[0.2] rounded-2xl py-4 pl-11 pr-5 text-white placeholder-white/50 text-sm font-medium transition-all duration-300 hover:border-white/15">
             </div>
             <button type="button" onclick="toggleFilters()" id="filterToggleBtn"
-                class="flex items-center justify-center gap-2.5 bg-white/[0.04] border border-white/[0.08] hover:border-accent-500/40 hover:bg-accent-600/10 rounded-2xl px-6 py-4 transition-all duration-300 group shrink-0">
+                class="flex items-center justify-center gap-2.5 bg-white/[0.04] border border-white/[0.2] hover:border-accent-500/40 hover:bg-accent-600/10 rounded-2xl px-6 py-4 transition-all duration-300 group shrink-0">
                 <i class="fas fa-sliders text-sm text-white/30 group-hover:text-accent-400 transition-colors"></i>
                 <span class="text-xs font-bold uppercase tracking-wider text-white/50 group-hover:text-white transition-colors">Filtres</span>
                 <i class="fas fa-chevron-down text-[10px] text-white/20 group-hover:text-accent-400 transition-all duration-300" id="filterChevron"></i>
@@ -210,12 +211,12 @@
 
         <!-- Expandable filters -->
         <div class="filter-panel mt-4" id="filterPanel">
-            <div class="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 md:p-8">
+            <div class="bg-white/[0.02] border border-white/[0.2] rounded-3xl p-6 md:p-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
                     <!-- Profile Type -->
                     <div class="space-y-2">
-                        <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Type de profil</label>
-                        <select name="profileType" class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 px-4 text-sm text-white/80 appearance-none cursor-pointer transition-all hover:border-white/15">
+                        <label class="text-[10px] uppercase font-bold text-white/60 tracking-wider">Type de profil</label>
+                        <select name="profileType" class="w-full bg-surface-950 border border-white/[0.2] rounded-xl py-3 px-4 text-sm text-white/80 appearance-none cursor-pointer transition-all hover:border-white/40">
                             <option value="">Tous</option>
                             <option value="Closeur" <%= filters.profileType === 'Closeur' ? 'selected' : '' %>>Closeur</option>
                             <option value="Commercial" <%= filters.profileType === 'Commercial' ? 'selected' : '' %>>Commercial</option>
@@ -224,8 +225,8 @@
                     </div>
                     <!-- Market -->
                     <div class="space-y-2">
-                        <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Marché</label>
-                        <select name="market" class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 px-4 text-sm text-white/80 appearance-none cursor-pointer transition-all hover:border-white/15">
+                        <label class="text-[10px] uppercase font-bold text-white/60 tracking-wider">Marché</label>
+                        <select name="market" class="w-full bg-surface-950 border border-white/[0.2] rounded-xl py-3 px-4 text-sm text-white/80 appearance-none cursor-pointer transition-all hover:border-white/40">
                             <option value="">Tous</option>
                             <option value="B2B" <%= filters.market === 'B2B' ? 'selected' : '' %>>B2B</option>
                             <option value="B2C" <%= filters.market === 'B2C' ? 'selected' : '' %>>B2C</option>
@@ -234,14 +235,14 @@
                     </div>
                     <!-- Experience -->
                     <div class="space-y-2">
-                        <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Expérience min.</label>
+                        <label class="text-[10px] uppercase font-bold text-white/60 tracking-wider">Expérience min.</label>
                         <input type="number" name="yearsExperience" placeholder="0 ans" value="<%= filters.yearsExperience || '' %>"
-                            class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 px-4 text-sm text-white/80 placeholder-white/15 transition-all hover:border-white/15">
+                            class="w-full bg-surface-950 border border-white/[0.2] rounded-xl py-3 px-4 text-sm text-white/80 placeholder-white/35 transition-all hover:border-white/40">
                     </div>
                     <!-- Mission -->
                     <div class="space-y-2">
-                        <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Type de mission</label>
-                        <select name="missionType" class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 px-4 text-sm text-white/80 appearance-none cursor-pointer transition-all hover:border-white/15">
+                        <label class="text-[10px] uppercase font-bold text-white/60 tracking-wider">Type de mission</label>
+                        <select name="missionType" class="w-full bg-surface-950 border border-white/[0.2] rounded-xl py-3 px-4 text-sm text-white/80 appearance-none cursor-pointer transition-all hover:border-white/40">
                             <option value="">Peu importe</option>
                             <option value="Mission (Webi/Challenge)" <%= filters.missionType === 'Mission (Webi/Challenge)' ? 'selected' : '' %>>Webi / Challenge</option>
                             <option value="Long terme" <%= filters.missionType === 'Long terme' ? 'selected' : '' %>>Long terme</option>
@@ -251,17 +252,17 @@
 
                 <!-- Total Closed -->
                 <div class="mb-6">
-                    <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider">Montant total closé (min)</label>
+                    <label class="text-[10px] uppercase font-bold text-white/60 tracking-wider">Montant total closé (min)</label>
                     <div class="relative mt-2 max-w-xs">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-sm font-mono">€</span>
                         <input type="number" name="totalClosed" placeholder="50 000" value="<%= filters.totalClosed || '' %>"
-                            class="w-full bg-surface-950 border border-white/[0.08] rounded-xl py-3 pl-9 pr-4 text-sm text-white/80 font-mono placeholder-white/15 transition-all hover:border-white/15">
+                            class="w-full bg-surface-950 border border-white/[0.2] rounded-xl py-3 pl-9 pr-4 text-sm text-white/80 font-mono placeholder-white/35 transition-all hover:border-white/40">
                     </div>
                 </div>
 
                 <!-- Product Types -->
                 <div>
-                    <label class="text-[10px] uppercase font-bold text-white/30 tracking-wider mb-3 block">Expertise produit</label>
+                    <label class="text-[10px] uppercase font-bold text-white/60 tracking-wider mb-3 block">Expertise produit</label>
                     <%
                     const isChecked = (val) => {
                         if (!filters.productTypes) return false;
@@ -285,14 +286,14 @@
                         <% productTypeOptions.forEach(opt => { %>
                             <label class="tag-chip rounded-xl px-3.5 py-2 cursor-pointer flex items-center gap-2 select-none has-[:checked]:bg-accent-600/15 has-[:checked]:border-accent-500/40">
                                 <input type="checkbox" name="productTypes" value="<%= opt.value %>" class="sr-only" <%= isChecked(opt.value) ? 'checked' : '' %>>
-                                <i class="fas <%= opt.icon %> text-[10px] text-white/25"></i>
-                                <span class="text-xs font-medium text-white/50"><%= opt.label %></span>
+                                <i class="fas <%= opt.icon %> text-[10px] text-white/70"></i>
+                                <span class="text-xs font-medium text-white/70"><%= opt.label %></span>
                             </label>
                         <% }) %>
                     </div>
                 </div>
 
-                <div class="flex justify-end mt-6 pt-4 border-t border-white/[0.04]">
+                <div class="flex justify-end mt-6 pt-4 border-t border-white/[0.1]">
                     <a href="/" class="text-white/25 hover:text-white/60 text-xs font-medium transition-colors mr-4 py-2">Réinitialiser</a>
                     <button type="submit" class="bg-white text-surface-950 hover:bg-accent-500 hover:text-white px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-300">Appliquer</button>
                 </div>
@@ -306,7 +307,7 @@
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
             <div class="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></div>
-            <p class="text-white/40 text-sm"><span class="text-white font-bold"><%= closers.length %></span> talent<%= closers.length > 1 ? 's' : '' %> trouvé<%= closers.length > 1 ? 's' : '' %></p>
+            <p class="text-white/80 text-sm"><span class="text-white font-bold"><%= closers.length %></span> talent<%= closers.length > 1 ? 's' : '' %> trouvé<%= closers.length > 1 ? 's' : '' %></p>
         </div>
     </div>
     <div class="gradient-line mt-4 rounded-full"></div>
@@ -317,7 +318,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         <% closers.forEach((closer, idx) => { %>
             <div onclick="openModal('modal-<%= closer._id %>')"
-                 class="card-glow bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden cursor-pointer flex flex-col stagger-in group"
+                 class="card-glow bg-white/[0.02] border border-white/[0.1] rounded-2xl overflow-hidden cursor-pointer flex flex-col stagger-in group"
                  style="animation-delay: <%= 0.08 * (idx % 9) + 0.25 %>s">
 
                 <!-- Image -->
@@ -349,14 +350,14 @@
                     <!-- Stats row -->
                     <div class="grid grid-cols-2 gap-3 mb-4">
                         <div class="stat-pill rounded-xl px-3 py-2.5">
-                            <p class="text-[9px] text-white/25 uppercase tracking-wider font-bold mb-0.5">Total Closé</p>
+                            <p class="text-[9px] text-white/45 uppercase tracking-wider font-bold mb-0.5">Total Closé</p>
                             <p class="text-white font-mono font-bold text-base"><%= closer.totalClosed ? closer.totalClosed.toLocaleString() : '0' %><span class="text-accent-400 text-sm">€</span></p>
                         </div>
                         <div class="stat-pill rounded-xl px-3 py-2.5">
-                            <p class="text-[9px] text-white/25 uppercase tracking-wider font-bold mb-0.5">Expertise</p>
+                            <p class="text-[9px] text-white/45 uppercase tracking-wider font-bold mb-0.5">Expertise</p>
                             <div class="flex items-center gap-1 flex-wrap">
                                 <% if(closer.productTypes && closer.productTypes.length > 0) { %>
-                                    <span class="text-[11px] text-white/70 font-medium"><%= closer.productTypes[0] %></span>
+                                    <span class="text-[11px] text-white font-medium"><%= closer.productTypes[0] %></span>
                                     <% if(closer.productTypes.length > 1) { %>
                                         <span class="text-[10px] text-accent-400 font-mono font-bold">+<%= closer.productTypes.length - 1 %></span>
                                     <% } %>
@@ -370,14 +371,14 @@
                     <!-- Tags -->
                     <div class="flex flex-wrap gap-1.5 mb-4">
                         <% if(closer.contractType && closer.contractType.length > 0) { %>
-                            <span class="px-2 py-0.5 bg-white/[0.04] border border-white/[0.06] rounded-md text-[10px] uppercase font-semibold text-white/35"><%= closer.contractType[0] %></span>
+                            <span class="px-2 py-0.5 bg-white/[0.04] border border-white/[0.06] rounded-md text-[10px] uppercase font-semibold text-white/80"><%= closer.contractType[0] %></span>
                         <% } %>
-                        <span class="px-2 py-0.5 bg-white/[0.04] border border-white/[0.06] rounded-md text-[10px] uppercase font-semibold text-white/35"><%= closer.availability %></span>
+                        <span class="px-2 py-0.5 bg-white/[0.04] border border-white/[0.06] rounded-md text-[10px] uppercase font-semibold text-white/80"><%= closer.availability %></span>
                     </div>
 
                     <!-- Footer -->
                     <div class="mt-auto pt-3 border-t border-white/[0.04] flex items-center justify-between">
-                        <span class="text-[11px] text-white/15 italic truncate max-w-[200px] font-light">"<%= closer.closingPhilosophy ? closer.closingPhilosophy.substring(0, 40) + '…' : '…' %>"</span>
+                        <span class="text-[11px] text-white/60 italic truncate max-w-[200px] font-light">"<%= closer.closingPhilosophy ? closer.closingPhilosophy.substring(0, 40) + '…' : '…' %>"</span>
                         <div class="w-8 h-8 rounded-full bg-white/[0.04] flex items-center justify-center group-hover:bg-accent-600 transition-all duration-300 shrink-0 ml-3">
                             <i class="fas fa-arrow-right text-[10px] text-white/30 group-hover:text-white transition-colors"></i>
                         </div>
@@ -393,7 +394,7 @@
 
                     <!-- Close btn -->
                     <button onclick="closeModalDirect('modal-<%= closer._id %>')" class="absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.08] flex items-center justify-center transition-all z-20 group">
-                        <i class="fas fa-xmark text-white/40 group-hover:text-white text-sm"></i>
+                        <i class="fas fa-xmark text-white/60 group-hover:text-white text-sm"></i>
                     </button>
 
                     <!-- Left panel -->
@@ -408,24 +409,24 @@
 
                         <div class="space-y-3 mb-6 text-sm">
                             <div class="flex justify-between py-2 border-b border-white/[0.04]">
-                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Expérience</span>
-                                <span class="font-bold text-white/80"><%= closer.yearsExperience %> ans</span>
+                                <span class="text-white/50 text-xs uppercase tracking-wide font-medium">Expérience</span>
+                                <span class="font-bold text-white/90"><%= closer.yearsExperience %> ans</span>
                             </div>
                             <div class="flex justify-between py-2 border-b border-white/[0.04]">
-                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Total Closé</span>
+                                <span class="text-white/50 text-xs uppercase tracking-wide font-medium">Total Closé</span>
                                 <span class="font-bold font-mono text-emerald-400"><%= closer.totalClosed ? closer.totalClosed.toLocaleString() : '0' %>€</span>
                             </div>
                             <div class="flex justify-between py-2 border-b border-white/[0.04]">
-                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Mission</span>
-                                <span class="font-semibold text-white/60 text-right text-xs"><%= closer.missionType %></span>
+                                <span class="text-white/50 text-xs uppercase tracking-wide font-medium">Mission</span>
+                                <span class="font-semibold text-white/90 text-right text-xs"><%= closer.missionType %></span>
                             </div>
                             <div class="flex justify-between py-2 border-b border-white/[0.04]">
-                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Disponibilité</span>
-                                <span class="font-semibold text-white/60"><%= closer.availability %></span>
+                                <span class="text-white/50 text-xs uppercase tracking-wide font-medium">Disponibilité</span>
+                                <span class="font-semibold text-white/90"><%= closer.availability %></span>
                             </div>
                             <div class="flex justify-between py-2 border-b border-white/[0.04]">
-                                <span class="text-white/25 text-xs uppercase tracking-wide font-medium">Objectif</span>
-                                <span class="font-semibold text-white/60"><%= closer.desiredIncome ? closer.desiredIncome + '€/m' : 'N/C' %></span>
+                                <span class="text-white/50 text-xs uppercase tracking-wide font-medium">Objectif</span>
+                                <span class="font-semibold text-white/90"><%= closer.desiredIncome ? closer.desiredIncome + '€/m' : 'N/C' %></span>
                             </div>
                         </div>
 
@@ -451,7 +452,7 @@
                                     </div>
                                 </div>
                             <% } else { %>
-                                <a href="/register-choice" class="block bg-white/[0.04] text-white/30 border border-white/[0.06] py-3.5 rounded-xl font-bold text-center hover:bg-accent-600 hover:text-white hover:border-accent-500 transition-all duration-300 text-xs uppercase tracking-wide">
+                                <a href="/register-choice" class="block bg-white/[0.1] text-white/50 border border-white/[0.2] py-3.5 rounded-xl font-bold text-center hover:bg-accent-600 hover:text-white hover:border-accent-500 transition-all duration-300 text-xs uppercase tracking-wide">
                                     <i class="fas fa-lock mr-2"></i> Inscrivez-vous pour contacter
                                 </a>
                             <% } %>
@@ -466,19 +467,19 @@
                             <span class="bg-white/[0.06] border border-white/[0.08] px-3 py-1.5 rounded-lg text-[11px] uppercase tracking-wide text-white/60"><%= closer.market %></span>
                             <% if(closer.productTypes) { %>
                                 <% closer.productTypes.forEach(type => { %>
-                                    <span class="border border-white/[0.08] px-3 py-1.5 rounded-lg text-[11px] uppercase text-white/40"><%= type %></span>
+                                    <span class="border border-white/[0.08] px-3 py-1.5 rounded-lg text-[11px] uppercase text-white/90"><%= type %></span>
                                 <% }) %>
                             <% } %>
                         </div>
 
                         <!-- Philosophy -->
                         <div class="mb-8">
-                            <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 mb-4 flex items-center gap-2">
+                            <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/90 mb-4 flex items-center gap-2">
                                 <span class="w-4 h-px bg-accent-500"></span> Vision du Closing
                             </h3>
                             <div class="bg-white/[0.02] border border-white/[0.05] p-6 rounded-2xl relative">
                                 <div class="absolute top-4 left-5 text-white/[0.03] text-5xl leading-none font-serif">"</div>
-                                <p class="text-white/50 leading-relaxed text-sm italic pl-4 border-l-2 border-accent-500/30">
+                                <p class="text-white/70 leading-relaxed text-sm italic pl-4 border-l-2 border-accent-500/30">
                                     <%= closer.closingPhilosophy || 'Non renseigné.' %>
                                 </p>
                             </div>
@@ -487,13 +488,13 @@
                         <!-- Details grid -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div>
-                                <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 mb-3 flex items-center gap-2">
+                                <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/50 mb-3 flex items-center gap-2">
                                     <i class="fas fa-file-signature text-accent-400/50 text-[10px]"></i> Contrats acceptés
                                 </h3>
                                 <div class="flex flex-wrap gap-2">
                                     <% if(closer.contractType) { %>
                                         <% closer.contractType.forEach(c => { %>
-                                            <span class="text-white/60 text-xs bg-white/[0.05] border border-white/[0.06] px-3 py-1.5 rounded-lg font-medium"><%= c %></span>
+                                            <span class="text-white/90 text-xs bg-white/[0.05] border border-white/[0.06] px-3 py-1.5 rounded-lg font-medium"><%= c %></span>
                                         <% }) %>
                                     <% } else { %>
                                         <span class="text-white/20 text-xs">—</span>
@@ -501,10 +502,10 @@
                                 </div>
                             </div>
                             <div>
-                                <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 mb-3 flex items-center gap-2">
+                                <h3 class="text-xs font-bold uppercase tracking-[0.15em] text-white/50 mb-3 flex items-center gap-2">
                                     <i class="fas fa-building text-accent-400/50 text-[10px]"></i> Anciens Clients
                                 </h3>
-                                <p class="text-white/50 text-sm leading-relaxed"><%= closer.pastClients || 'Confidentiel' %></p>
+                                <p class="text-white/90 text-sm leading-relaxed"><%= closer.pastClients || 'Confidentiel' %></p>
                             </div>
                         </div>
 
