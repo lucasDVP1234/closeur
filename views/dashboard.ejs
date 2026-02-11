@@ -30,7 +30,7 @@
         /* Grain */
         body::before {
             content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/7000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
             opacity: 0.5;
         }
 
@@ -63,7 +63,7 @@
         .field-input::placeholder { color: rgba(255,255,255,0.12); }
         .field-input:disabled { opacity: 0.35; cursor: not-allowed; }
 
-        select.field-input { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.25)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+        select.field-input { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/7000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.25)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 
         textarea.field-input { resize: vertical; min-height: 80px; line-height: 1.6; }
 
@@ -110,24 +110,24 @@
 <body class="min-h-screen pb-24">
 
 <!-- ═══════════════ NAV ═══════════════ -->
-<nav class="sticky top-0 z-50 bg-surface-950/70 backdrop-blur-2xl border-b border-white/[0.04]">
+<nav class="sticky top-0 z-50 bg-surface-950 backdrop-blur-2xl border-b border-white/[0.04]">
     <div class="max-w-[1400px] mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
         <div class="flex items-center gap-4">
             <a href="/" class="group flex items-center gap-3 select-none">
                 <div class="relative w-8 h-8 rounded-lg bg-accent-600 flex items-center justify-center overflow-hidden group-hover:rounded-xl transition-all duration-300">
                     <span class="text-white font-black text-sm tracking-tight">TC</span>
-                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <div class="absolute inset-0 bg-white/70 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                 </div>
                 <span class="text-sm font-bold tracking-[0.2em] uppercase text-white/80 group-hover:text-white transition-colors">The Closers</span>
             </a>
-            <div class="hidden sm:flex items-center gap-1.5 bg-accent-600/10 border border-accent-500/20 px-2.5 py-1 rounded-lg">
+            <div class="hidden sm:flex items-center gap-1.5 bg-accent-600/10 border border-accent-500/70 px-2.5 py-1 rounded-lg">
                 <span class="w-1.5 h-1.5 bg-accent-400 rounded-full"></span>
                 <span class="text-[10px] font-bold uppercase tracking-widest text-accent-400">Cockpit</span>
             </div>
         </div>
 
         <div class="flex items-center gap-3">
-            <a href="/" class="flex items-center gap-2 text-white/30 hover:text-white/70 text-xs font-medium transition-colors px-3 py-2 rounded-lg hover:bg-white/[0.04]">
+            <a href="/" class="flex items-center gap-2 text-white/30 hover:text-white text-xs font-medium transition-colors px-3 py-2 rounded-lg hover:bg-white/[0.04]">
                 <i class="fas fa-globe text-[10px]"></i> <span class="hidden sm:inline">Annuaire</span>
             </a>
             <div class="w-px h-5 bg-white/[0.06]"></div>
@@ -150,13 +150,13 @@
                 <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">
                     Bon retour, <span class="text-accent-400"><%= closer.prenom %></span>.
                 </h2>
-                <p class="text-white/25 text-sm mt-2 font-light">Gérez votre profil et vos disponibilités depuis votre cockpit.</p>
+                <p class="text-white text-sm mt-2 font-light">Gérez votre profil et vos disponibilités depuis votre cockpit.</p>
             </div>
 
             <!-- Status pill -->
             <div class="flex items-center gap-4 bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-3.5 shrink-0">
                 <div class="text-right">
-                    <p class="text-[10px] text-white/20 uppercase font-bold tracking-wider mb-0.5">Statut</p>
+                    <p class="text-[10px] text-white/70 uppercase font-bold tracking-wider mb-0.5">Statut</p>
                     <p class="text-sm font-bold text-emerald-400"><%= closer.availability %></p>
                 </div>
                 <div class="relative">
@@ -174,7 +174,7 @@
         <!-- ══════ LEFT: PREVIEW ══════ -->
         <aside class="lg:col-span-4 xl:col-span-4 space-y-5">
 
-            <p class="text-[10px] uppercase font-bold text-white/20 tracking-[0.2em] flex items-center gap-2">
+            <p class="text-[10px] uppercase font-bold text-white/70 tracking-[0.2em] flex items-center gap-2">
                 <i class="fas fa-eye text-accent-500/40 text-[9px]"></i> Aperçu public
             </p>
 
@@ -206,7 +206,7 @@
 
                     <!-- Name -->
                     <div class="absolute bottom-4 left-4 right-4">
-                        <h3 class="text-xl font-bold text-white leading-tight"><%= closer.prenom %> <span class="text-white/50"><%= closer.nom.charAt(0) %>.</span></h3>
+                        <h3 class="text-xl font-bold text-white leading-tight"><%= closer.prenom %> <span class="text-white/70"><%= closer.nom.charAt(0) %>.</span></h3>
                         <p class="text-accent-400 text-[11px] font-mono font-medium mt-0.5 uppercase tracking-wide"><%= closer.market %> · <%= closer.missionType %></p>
                     </div>
                 </div>
@@ -238,11 +238,11 @@
             <!-- Quick stats -->
             <div class="grid grid-cols-2 gap-3">
                 <div class="stat-block rounded-xl p-4">
-                    <p class="text-[9px] uppercase font-bold text-white/20 tracking-wider mb-1">Total Closé</p>
+                    <p class="text-[9px] uppercase font-bold text-white/70 tracking-wider mb-1">Total Closé</p>
                     <p class="text-lg font-bold font-mono text-white/80"><%= closer.totalClosed ? closer.totalClosed.toLocaleString() : '0' %><span class="text-accent-400 text-sm">€</span></p>
                 </div>
                 <div class="stat-block rounded-xl p-4">
-                    <p class="text-[9px] uppercase font-bold text-white/20 tracking-wider mb-1">Objectif</p>
+                    <p class="text-[9px] uppercase font-bold text-white/70 tracking-wider mb-1">Objectif</p>
                     <p class="text-lg font-bold font-mono text-white/80"><%= closer.desiredIncome ? closer.desiredIncome.toLocaleString() : '—' %><span class="text-white/30 text-sm"><%= closer.desiredIncome ? '€/m' : '' %></span></p>
                 </div>
             </div>
@@ -257,10 +257,10 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-7 md:px-9 pt-7 md:pt-9 pb-5 border-b border-white/[0.04]">
                     <div>
                         <h3 class="text-xl font-bold tracking-tight">Édition du profil</h3>
-                        <p class="text-white/20 text-xs mt-1 font-light">Les modifications sont visibles immédiatement sur l'annuaire.</p>
+                        <p class="text-white/70 text-xs mt-1 font-light">Les modifications sont visibles immédiatement sur l'annuaire.</p>
                     </div>
                     <button form="updateForm" type="submit" id="saveBtn"
-                        class="bg-white text-surface-950 hover:bg-accent-500 hover:text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-lg shadow-white/5 hover:shadow-accent-500/20 flex items-center gap-2.5 shrink-0 group">
+                        class="bg-white text-surface-950 hover:bg-accent-500 hover:text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-lg shadow-white/5 hover:shadow-accent-500/70 flex items-center gap-2.5 shrink-0 group">
                         <i class="fas fa-check text-[10px] group-hover:rotate-12 transition-transform"></i> Sauvegarder
                     </button>
                 </div>
@@ -270,7 +270,7 @@
                     <!-- ──── Section 1: Identité ──── -->
                     <div class="pb-7 border-b border-white/[0.04]">
                         <div class="section-toggle flex items-center justify-between mb-6" onclick="toggleSection(this)">
-                            <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 flex items-center gap-2.5">
+                            <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white flex items-center gap-2.5">
                                 <span class="w-5 h-5 rounded-md bg-accent-600/15 flex items-center justify-center"><i class="fas fa-user text-accent-400 text-[9px]"></i></span>
                                 Identité & Contact
                             </h4>
@@ -284,7 +284,7 @@
                                     <div class="photo-upload relative w-full aspect-square bg-white/[0.02] border-2 border-dashed border-white/[0.08] rounded-2xl overflow-hidden cursor-pointer group hover:border-accent-500/40 transition-all">
                                         <input type="file" name="photo" class="absolute inset-0 opacity-0 cursor-pointer z-20">
                                         <img src="<%= closer.photoUrl %>" class="absolute inset-0 w-full h-full object-cover" style="filter: brightness(0.6);">
-                                        <div class="photo-overlay absolute inset-0 bg-surface-950/70 flex flex-col items-center justify-center z-10">
+                                        <div class="photo-overlay absolute inset-0 bg-surface-950 flex flex-col items-center justify-center z-10">
                                             <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-2">
                                                 <i class="fas fa-camera text-white/60"></i>
                                             </div>
@@ -296,19 +296,19 @@
                                 <!-- Fields -->
                                 <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Prénom</label>
+                                        <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Prénom</label>
                                         <input type="text" name="prenom" value="<%= closer.prenom %>" class="field-input">
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Nom</label>
+                                        <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Nom</label>
                                         <input type="text" name="nom" value="<%= closer.nom %>" class="field-input">
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Email <span class="text-white/10 normal-case">(non modifiable)</span></label>
+                                        <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Email <span class="text-white/10 normal-case">(non modifiable)</span></label>
                                         <input type="email" value="<%= closer.email %>" disabled class="field-input">
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Téléphone</label>
+                                        <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Téléphone</label>
                                         <input type="text" name="telephone" value="<%= closer.telephone %>" class="field-input" placeholder="+33 6 00 00 00 00">
                                     </div>
                                 </div>
@@ -319,7 +319,7 @@
                     <!-- ──── Section 2: Expertise ──── -->
                     <div class="py-7 border-b border-white/[0.04]">
                         <div class="section-toggle flex items-center justify-between mb-6" onclick="toggleSection(this)">
-                            <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 flex items-center gap-2.5">
+                            <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white flex items-center gap-2.5">
                                 <span class="w-5 h-5 rounded-md bg-accent-600/15 flex items-center justify-center"><i class="fas fa-crosshairs text-accent-400 text-[9px]"></i></span>
                                 Expertise & Positionnement
                             </h4>
@@ -329,7 +329,7 @@
                         <div class="section-body">
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
                                 <div>
-                                    <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Profil principal</label>
+                                    <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Profil principal</label>
                                     <select name="profileType" class="field-input">
                                         <option value="Closeur" <%= closer.profileType === 'Closeur' ? 'selected' : '' %>>Closeur</option>
                                         <option value="Commercial" <%= closer.profileType === 'Commercial' ? 'selected' : '' %>>Commercial</option>
@@ -337,7 +337,7 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Marché cible</label>
+                                    <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Marché cible</label>
                                     <select name="market" class="field-input">
                                         <option value="B2C" <%= closer.market === 'B2C' ? 'selected' : '' %>>B2C</option>
                                         <option value="B2B" <%= closer.market === 'B2B' ? 'selected' : '' %>>B2B</option>
@@ -345,7 +345,7 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Type de mission</label>
+                                    <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Type de mission</label>
                                     <select name="missionType" class="field-input">
                                         <option value="Mission (Webi/Challenge)" <%= closer.missionType === 'Mission (Webi/Challenge)' ? 'selected' : '' %>>Mission (Webi/Challenge)</option>
                                         <option value="Long terme" <%= closer.missionType === 'Long terme' ? 'selected' : '' %>>Long terme</option>
@@ -355,18 +355,18 @@
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
                                 <div>
-                                    <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Années d'expérience</label>
+                                    <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Années d'expérience</label>
                                     <input type="number" name="yearsExperience" value="<%= closer.yearsExperience %>" class="field-input font-mono" min="0">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Total closé (€)</label>
+                                    <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Total closé (€)</label>
                                     <input type="number" name="totalClosed" value="<%= closer.totalClosed %>" class="field-input font-mono" min="0">
                                 </div>
                             </div>
 
                             <!-- Product types chips -->
                             <div>
-                                <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-3">Produits maîtrisés</label>
+                                <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-3">Produits maîtrisés</label>
                                 <%
                                 const productOpts = [
                                     { value: 'Crypto_Trading', label: 'Crypto & Trading', icon: 'fa-bitcoin-sign' },
@@ -387,7 +387,7 @@
                                         <label class="chip-check">
                                             <input type="checkbox" name="productTypes" value="<%= opt.value %>" <%= closer.productTypes && closer.productTypes.includes(opt.value) ? 'checked' : '' %>>
                                             <div class="chip-label">
-                                                <i class="fas <%= opt.icon %> text-[10px] text-white/20"></i>
+                                                <i class="fas <%= opt.icon %> text-[10px] text-white/90"></i>
                                                 <span><%= opt.label %></span>
                                             </div>
                                         </label>
@@ -400,7 +400,7 @@
                     <!-- ──── Section 3: Conditions ──── -->
                     <div class="py-7 border-b border-white/[0.04]">
                         <div class="section-toggle flex items-center justify-between mb-6" onclick="toggleSection(this)">
-                            <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 flex items-center gap-2.5">
+                            <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white flex items-center gap-2.5">
                                 <span class="w-5 h-5 rounded-md bg-accent-600/15 flex items-center justify-center"><i class="fas fa-handshake-angle text-accent-400 text-[9px]"></i></span>
                                 Conditions & Disponibilité
                             </h4>
@@ -410,32 +410,32 @@
                         <div class="section-body">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
                                 <div>
-                                    <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Disponibilité</label>
+                                    <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Disponibilité</label>
                                     <select name="availability" class="field-input">
                                         <option value="Full Time" <%= closer.availability === 'Full Time' ? 'selected' : '' %>>Full Time</option>
                                         <option value="Mi-temps" <%= closer.availability === 'Mi-temps' ? 'selected' : '' %>>Mi-temps</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Revenu souhaité / mois (€)</label>
+                                    <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Revenu souhaité / mois (€)</label>
                                     <input type="number" name="desiredIncome" value="<%= closer.desiredIncome %>" class="field-input font-mono" placeholder="3000" min="0">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-3">Contrats acceptés</label>
+                                <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-3">Contrats acceptés</label>
                                 <div class="flex flex-wrap gap-2">
                                     <label class="chip-check">
                                         <input type="checkbox" name="contractType" value="100% Commission" <%= closer.contractType && closer.contractType.includes('100% Commission') ? 'checked' : '' %>>
                                         <div class="chip-label">
-                                            <i class="fas fa-percent text-[9px] text-white/20"></i>
+                                            <i class="fas fa-percent text-[9px] text-white/70"></i>
                                             <span>100% Commission</span>
                                         </div>
                                     </label>
                                     <label class="chip-check">
                                         <input type="checkbox" name="contractType" value="Fixe + Commission" <%= closer.contractType && closer.contractType.includes('Fixe + Commission') ? 'checked' : '' %>>
                                         <div class="chip-label">
-                                            <i class="fas fa-coins text-[9px] text-white/20"></i>
+                                            <i class="fas fa-coins text-[9px] text-white/70"></i>
                                             <span>Fixe + Commission</span>
                                         </div>
                                     </label>
@@ -447,7 +447,7 @@
                     <!-- ──── Section 4: Track Record ──── -->
                     <div class="pt-7">
                         <div class="section-toggle flex items-center justify-between mb-6" onclick="toggleSection(this)">
-                            <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white/25 flex items-center gap-2.5">
+                            <h4 class="text-xs font-bold uppercase tracking-[0.15em] text-white flex items-center gap-2.5">
                                 <span class="w-5 h-5 rounded-md bg-accent-600/15 flex items-center justify-center"><i class="fas fa-trophy text-accent-400 text-[9px]"></i></span>
                                 Track Record & Vision
                             </h4>
@@ -457,17 +457,17 @@
                         <div class="section-body">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
                                 <div>
-                                    <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Lien vidéo <span class="text-white/10 normal-case">(Loom / YouTube)</span></label>
+                                    <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Lien vidéo <span class="text-white/10 normal-case">(Loom / YouTube)</span></label>
                                     <input type="url" name="videoUrl" value="<%= closer.videoUrl %>" placeholder="https://…" class="field-input">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Anciens clients</label>
+                                    <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Anciens clients</label>
                                     <input type="text" name="pastClients" value="<%= closer.pastClients %>" placeholder="Client A, Client B…" class="field-input">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-[10px] uppercase text-white/20 font-bold tracking-wider mb-2">Votre vision du closing</label>
+                                <label class="block text-[10px] uppercase text-white/70 font-bold tracking-wider mb-2">Votre vision du closing</label>
                                 <textarea name="closingPhilosophy" class="field-input" rows="3" placeholder="Un bon closeur, c'est…"><%= closer.closingPhilosophy %></textarea>
                             </div>
                         </div>
@@ -489,8 +489,8 @@
 </div>
 
 <!-- ═══════════════ TOAST ═══════════════ -->
-<div id="toast" class="toast fixed bottom-6 right-6 z-[200] bg-emerald-600/90 backdrop-blur-xl border border-emerald-400/20 text-white px-5 py-3.5 rounded-xl shadow-2xl shadow-emerald-600/20 flex items-center gap-3">
-    <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+<div id="toast" class="toast fixed bottom-6 right-6 z-[200] bg-emerald-600/90 backdrop-blur-xl border border-emerald-400/70 text-white px-5 py-3.5 rounded-xl shadow-2xl shadow-emerald-600/70 flex items-center gap-3">
+    <div class="w-7 h-7 rounded-lg bg-white/70 flex items-center justify-center shrink-0">
         <i class="fas fa-check text-sm"></i>
     </div>
     <span class="text-sm font-semibold">Profil mis à jour avec succès</span>
@@ -502,7 +502,7 @@
         <span class="text-[11px] text-white/15 font-medium tracking-wide">© 2025 The Closers. Tous droits réservés.</span>
         <div class="flex items-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/60 animate-pulse"></span>
-            <span class="text-[11px] text-white/20 font-medium">Plateforme active</span>
+            <span class="text-[11px] text-white/70 font-medium">Plateforme active</span>
         </div>
     </div>
 </footer>
