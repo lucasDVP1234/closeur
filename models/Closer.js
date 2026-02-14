@@ -42,6 +42,9 @@ const CloserSchema = new mongoose.Schema({
 
     // --- 5. VISION ---
     closingPhilosophy: String, // "Un bon closeur pour vous c'est..."
+    isPremium: { type: Boolean, default: false },
+    stripeCustomerId: { type: String }, // L'ID du client chez Stripe (cus_xxx)
+    stripeSubscriptionId: { type: String },
 
     createdAt: { type: Date, default: Date.now }
 });

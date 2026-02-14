@@ -9,8 +9,69 @@ const multerS3 = require('multer-s3');
 const { S3Client } = require('@aws-sdk/client-s3');
 const Closer = require('./models/Closer');
 const Company = require('./models/Company');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+
 
 const app = express();
+
+// --- 1. ROUTE WEBHOOK STRIPE (DOIT ÊTRE PLACÉE AVANT LES PARSEURS BODY) ---
+// C'est ici que Stripe nous parle en secret pour confirmer les paiements ou annulations
+app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+        console.error(`Webhook Error: ${err.message}`);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Gestion des événements
+    switch (event.type) {
+        case 'checkout.session.completed':
+            // LE PAIEMENT A RÉUSSI -> ON ACTIVE LE PREMIUM
+            const session = event.data.object;
+            const userId = session.metadata.userId;
+            
+            console.log(`💰 Paiement validé pour le user ${userId}`);
+            
+            await Closer.findByIdAndUpdate(userId, { 
+                isPremium: true,
+                stripeCustomerId: session.customer,
+                stripeSubscriptionId: session.subscription
+            });
+            break;
+
+        case 'customer.subscription.deleted':
+            // L'ABONNEMENT EST ANNULÉ/EXPIRÉ -> ON COUPE L'ACCÈS
+            const subscription = event.data.object;
+            // On retrouve le user grâce à son ID client Stripe
+            const closer = await Closer.findOne({ stripeCustomerId: subscription.customer });
+            
+            if (closer) {
+                console.log(`❌ Abonnement terminé pour ${closer.prenom}. Accès coupé.`);
+                closer.isPremium = false;
+                closer.stripeSubscriptionId = null;
+                await closer.save();
+            }
+            break;
+            
+        case 'invoice.payment_failed':
+            // LE PAIEMENT MENSUEL A ÉCHOUÉ -> ON PEUT COUPER L'ACCÈS
+            const invoice = event.data.object;
+            const badPayer = await Closer.findOne({ stripeCustomerId: invoice.customer });
+            if (badPayer) {
+                console.log(`⚠️ Paiement échoué pour ${badPayer.prenom}.`);
+                badPayer.isPremium = false;
+                await badPayer.save();
+            }
+            break;
+    }
+
+    res.json({received: true});
+});
 
 // --- CONFIGURATION ---
 mongoose.connect(process.env.MONGO_URI).then(() => console.log('🔥 DB Connectée'));
@@ -116,10 +177,70 @@ app.get('/', async (req, res) => {
         // MAINTENANT (JUSTE) :
         query.missionType = req.query.missionType;
     }
-    let sort = req.query.sort === 'best' ? { totalClosed: -1 } : { createdAt: -1 };
+    let sort = req.query.sort === 'best' 
+    ? { isPremium: -1, totalClosed: -1 }  // D'abord Premium, ensuite le CA
+    : { isPremium: -1, createdAt: -1 };
 
     const closers = await Closer.find(query).sort(sort);
+    if (req.session.user && req.session.user.role === 'closer') {
+        const currentUser = await Closer.findById(req.session.user.id);
+        if (currentUser) req.session.user.isPremium = currentUser.isPremium;
+    }
+
     res.render('index', { closers, filters: req.query });
+});
+
+// --- NOUVELLE ROUTE : CRÉER LE PAIEMENT (CHECKOUT) ---
+app.post('/create-closer-checkout', isAuthenticated, async (req, res) => {
+    try {
+        const user = await Closer.findById(req.session.user.id);
+        
+        // On crée la session de paiement Stripe
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'subscription', // Mode ABONNEMENT
+            customer_email: user.email,
+            line_items: [
+                {
+                    price: process.env.STRIPE_PRICE_ID, // ID du prix (ex: price_1P5x...) à créer dans Stripe
+                    quantity: 1,
+                },
+            ],
+            metadata: {
+                userId: user._id.toString() // Pour savoir QUI a payé dans le webhook
+            },
+            success_url: `${process.env.DOMAIN}/dashboard?success=true`,
+            cancel_url: `${process.env.DOMAIN}/?canceled=true`,
+        });
+
+        res.redirect(303, session.url);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send("Erreur Stripe : " + e.message);
+    }
+});
+
+// --- ROUTE ANNULATION ABONNEMENT ---
+app.post('/create-portal-session', isAuthenticated, async (req, res) => {
+    try {
+        const user = await Closer.findById(req.session.user.id);
+
+        if (!user.stripeCustomerId) {
+            return res.redirect('/dashboard');
+        }
+
+        // On génère l'URL du portail Stripe
+        const portalSession = await stripe.billingPortal.sessions.create({
+            customer: user.stripeCustomerId,
+            return_url: `${process.env.DOMAIN}/dashboard`, // Où il revient après avoir géré son abo
+        });
+
+        // On redirige l'utilisateur vers Stripe
+        res.redirect(portalSession.url);
+    } catch (e) {
+        console.error("Erreur portail:", e);
+        res.status(500).send("Erreur accès portail : " + e.message);
+    }
 });
 
 // 2. AUTHENTIFICATION (CHOIX)
@@ -209,7 +330,7 @@ app.post('/login', async (req, res) => {
     }
 
     if (user && await bcrypt.compare(password, user.password)) {
-        req.session.user = { id: user._id, role: role, name: user.prenom || user.companyName };
+        req.session.user = { id: user._id, role: role, name: user.prenom || user.companyName, isPremium: user.isPremium };
         if(role === 'closer') return res.redirect('/dashboard');
         return res.redirect('/');
     }
