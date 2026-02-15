@@ -9,6 +9,7 @@ const multerS3 = require('multer-s3');
 const { S3Client } = require('@aws-sdk/client-s3');
 const Closer = require('./models/Closer');
 const Company = require('./models/Company');
+const Offer = require('./models/Offer');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 
@@ -314,27 +315,125 @@ app.post('/register/closer', upload.single('photo'), async (req, res) => {
         res.send("Erreur technique : " + e.message); 
     }
 });
+
+// ============================================================
+// SYSTEME D'OFFRES D'EMPLOI (JOB BOARD)
+// ============================================================
+
+// 1. PAGE TOUTES LES OFFRES (Pour les Closers)
+app.get('/offres', isAuthenticated, async (req, res) => {
+    // On récupère toutes les offres, triées par date (récentes en premier)
+    const offers = await Offer.find().sort({ createdAt: -1 });
+    res.render('offres', { offers, user: req.session.user });
+});
+
+// 2. POSTULER A UNE OFFRE (Action Closer)
+app.post('/offres/apply/:id', isAuthenticated, async (req, res) => {
+    if (req.session.user.role !== 'closer') return res.redirect('/offres');
+
+    try {
+        // On ajoute l'ID du closer dans la liste des candidats (si pas déjà dedans)
+        await Offer.findByIdAndUpdate(req.params.id, {
+            $addToSet: { applicants: req.session.user.id }
+        });
+        res.redirect('/offres?success=applied');
+    } catch (e) {
+        console.error(e);
+        res.redirect('/offres?error=true');
+    }
+});
+
+// 3. DASHBOARD ENTREPRISE (Poster & Gérer)
+app.get('/company/dashboard', isAuthenticated, async (req, res) => {
+    if (req.session.user.role !== 'company') return res.redirect('/');
+    
+    // On récupère uniquement les offres de CETTE entreprise
+    const myOffers = await Offer.find({ companyId: req.session.user.id }).sort({ createdAt: -1 });
+    
+    res.render('company-dashboard', { myOffers, user: req.session.user });
+});
+
+// 4. CREER UNE OFFRE (Action Entreprise)
+app.post('/company/create-offer', isAuthenticated, async (req, res) => {
+    if (req.session.user.role !== 'company') return res.redirect('/');
+
+    try {
+        await Offer.create({
+            companyId: req.session.user.id,
+            companyName: req.session.user.name,
+            ...req.body
+        });
+        res.redirect('/company/dashboard?success=created');
+    } catch (e) {
+        console.error(e);
+        res.redirect('/company/dashboard?error=true');
+    }
+});
+
+// 5. VOIR LES CANDIDATS D'UNE OFFRE (Action Entreprise)
+app.get('/company/offer/:id/candidats', isAuthenticated, async (req, res) => {
+    if (req.session.user.role !== 'company') return res.redirect('/');
+
+    try {
+        // On cherche l'offre et on "populate" (remplit) les infos des candidats
+        const offer = await Offer.findOne({ _id: req.params.id, companyId: req.session.user.id })
+            .populate('applicants'); // Magie Mongoose : récupère les objets Closer entiers
+
+        if (!offer) return res.redirect('/company/dashboard');
+
+        res.render('company-candidats', { offer, candidats: offer.applicants });
+    } catch (e) {
+        console.error(e);
+        res.redirect('/company/dashboard');
+    }
+});
+
+// 6. SUPPRIMER UNE OFFRE
+app.post('/company/delete-offer/:id', isAuthenticated, async (req, res) => {
+    if (req.session.user.role !== 'company') return res.redirect('/');
+    await Offer.findOneAndDelete({ _id: req.params.id, companyId: req.session.user.id });
+    res.redirect('/company/dashboard');
+});
+
 // 5. LOGIN
-app.get('/login', (req, res) => res.render('auth/login'));
+app.get('/login', (req, res) => {
+    // On affiche la page avec aucune erreur par défaut
+    res.render('auth/login', { error: null });
+});
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     
-    // On cherche d'abord dans les entreprises
-    let user = await Company.findOne({ email });
-    let role = 'company';
+    try {
+        // On cherche d'abord dans les entreprises
+        let user = await Company.findOne({ email });
+        let role = 'company';
 
-    // Si pas trouvé, on cherche dans les closeurs
-    if (!user) {
-        user = await Closer.findOne({ email });
-        role = 'closer';
-    }
+        // Si pas trouvé, on cherche dans les closeurs
+        if (!user) {
+            user = await Closer.findOne({ email });
+            role = 'closer';
+        }
 
-    if (user && await bcrypt.compare(password, user.password)) {
-        req.session.user = { id: user._id, role: role, name: user.prenom || user.companyName, isPremium: user.isPremium };
-        if(role === 'closer') return res.redirect('/dashboard');
-        return res.redirect('/');
+        // Vérification du mot de passe
+        if (user && await bcrypt.compare(password, user.password)) {
+            req.session.user = { 
+                id: user._id, 
+                role: role, 
+                name: user.prenom || user.companyName, 
+                isPremium: user.isPremium 
+            };
+            
+            if(role === 'closer') return res.redirect('/dashboard');
+            return res.redirect('/');
+        }
+
+        // SI ECHEC : On recharge la page avec le message d'erreur
+        return res.render('auth/login', { error: 'Email ou mot de passe incorrect.' });
+
+    } catch (e) {
+        console.error(e);
+        res.render('auth/login', { error: 'Une erreur technique est survenue.' });
     }
-    res.send("Email ou mot de passe incorrect");
 });
 
 // 6. DASHBOARD (Seulement pour les closeurs)

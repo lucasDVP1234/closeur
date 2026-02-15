@@ -15,7 +15,16 @@
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]"></div>
 
         <h2 class="text-3xl font-bold mb-2 text-center text-white">Connexion.</h2>
-        <p class="text-gray-500 text-center mb-8 text-sm">Accédez au terminal.</p>
+        <p class="text-gray-500 text-center mb-6 text-sm">Accédez au terminal.</p>
+
+        <% if (locals.error) { %>
+            <div class="mb-6 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wide flex items-center gap-2 animate-pulse">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <%= error %>
+            </div>
+        <% } %>
 
         <form action="/login" method="POST" class="space-y-5">
             <div>
@@ -24,7 +33,10 @@
             </div>
             
             <div>
-                <label class="block text-xs uppercase text-gray-500 mb-1 ml-1">Mot de passe</label>
+                <div class="flex justify-between items-center mb-1 ml-1">
+                    <label class="block text-xs uppercase text-gray-500">Mot de passe</label>
+                    <a href="mailto:contact@sefairecloser.com?subject=Mot de passe oublié&body=Bonjour, j'ai oublié mon mot de passe pour le compte : [VOTRE EMAIL ICI]" class="text-[10px] text-purple-400 hover:text-purple-300 transition-colors uppercase tracking-wider font-bold">Mot de passe oublié ?</a>
+                </div>
                 <input type="password" name="password" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-purple-500 focus:bg-white/10 transition-all placeholder-gray-600" placeholder="••••••••">
             </div>
 
