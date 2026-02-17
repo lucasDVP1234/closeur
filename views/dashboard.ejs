@@ -25,7 +25,7 @@
     </script>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'Outfit', sans-serif; background: #050506; color: #fafafa; overflow-x: hidden; }
+        body { font-family: 'Outfit', sans-serif; background: #050506; color: #fafafa; overflow-x: hidden; position: relative; }
 
         /* Grain */
         body::before {
@@ -34,20 +34,27 @@
             opacity: 0.5;
         }
 
+        /* Ambient background */
+        body::after {
+            content: '';
+            position: fixed; inset: -20%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(900px 520px at 18% 12%, rgba(139, 92, 246, 0.16), transparent 60%),
+                radial-gradient(820px 460px at 78% 18%, rgba(167, 139, 250, 0.12), transparent 62%),
+                radial-gradient(720px 460px at 55% 78%, rgba(124, 58, 237, 0.10), transparent 65%);
+            opacity: 0.9;
+            filter: saturate(1.05);
+        }
+        body > * { position: relative; z-index: 1; }
+
         /* Scrollbar */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.25); border-radius: 99px; }
         ::selection { background: rgba(139,92,246,0.4); color: white; }
 
-        /* Gradient line */
-        .gradient-line {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #8b5cf6, #a78bfa, #8b5cf6, transparent);
-            background-size: 200% 100%;
-            animation: shimmer 3s ease-in-out infinite;
-        }
-        @keyframes shimmer { 0%,100% { background-position: 200% 0; } 50% { background-position: -200% 0; } }
 
         /* Stagger */
         .stagger-in { opacity: 0; transform: translateY(20px); animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) forwards; }
@@ -100,87 +107,68 @@
         .preview-card { transition: box-shadow 0.3s ease; }
         .preview-card:hover { box-shadow: 0 0 40px rgba(139,92,246,0.08); }
 
+        .baguette-surface {
+            background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                0 30px 90px -50px rgba(0,0,0,0.8),
+                0 0 0 1px rgba(255,255,255,0.02) inset;
+        }
+
         /* Stat block */
         .stat-block {
             background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(139,92,246,0.01));
             border: 1px solid rgba(139,92,246,0.1);
         }
         .card-premium {
-            border: 1px solid rgba(245, 158, 11, 0.5) !important;
-            box-shadow: 0 0 35px rgba(245, 158, 11, 0.15) !important;
-            background: linear-gradient(180deg, rgba(245, 158, 11, 0.03) 0%, rgba(0,0,0,0) 100%) !important;
+            border: 1px solid rgba(139, 92, 246, 0.5) !important;
+            box-shadow: 0 0 35px rgba(139, 92, 246, 0.15) !important;
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.03) 0%, rgba(0,0,0,0) 100%) !important;
         }
-        .text-gold { color: #fbbf24; text-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
-        .border-gold { border-color: rgba(245, 158, 11, 0.3) !important; }
-        .bg-gold-subtle { background: rgba(245, 158, 11, 0.05) !important; }
+        .text-gold { color: #a78bfa; text-shadow: 0 0 10px rgba(139, 92, 246, 0.5); }
+        .border-gold { border-color: rgba(139, 92, 246, 0.3) !important; }
+        .bg-gold-subtle { background: rgba(139, 92, 246, 0.05) !important; }
     </style>
 </head>
 <body class="min-h-screen pb-24">
 
-<!-- ═══════════════ NAV ═══════════════ -->
-<nav class="sticky top-0 z-50 bg-surface-950 backdrop-blur-2xl border-b border-white/[0.04]">
-    <div class="max-w-[1400px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-        
-        <div class="flex items-center gap-2 md:gap-4">
-            <a href="/" class="group flex items-center gap-2 md:gap-3 select-none">
-                <div class="relative w-8 h-8 rounded-lg bg-accent-600 flex items-center justify-center overflow-hidden group-hover:rounded-xl transition-all duration-300 shrink-0">
-                    <span class="text-white font-black text-sm tracking-tight">SFC</span>
-                    <div class="absolute inset-0 bg-white/70 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                </div>
-                <span class="text-[10px] md:text-sm font-bold tracking-normal md:tracking-[0.2em] uppercase text-white/80 group-hover:text-white transition-colors whitespace-nowrap">
-                    SEFAIRECLOSER.COM
-                </span>
-            </a>
-
-            <div class="hidden sm:flex items-center gap-1.5 bg-accent-600/10 border border-accent-500/70 px-2.5 py-1 rounded-lg shrink-0">
-                <span class="w-1.5 h-1.5 bg-accent-400 rounded-full animate-pulse"></span>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-accent-400">Cockpit</span>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-2 md:gap-3">
-            <a href="/" class="flex items-center gap-2 text-white/70 hover:text-white text-xs font-medium transition-colors px-2 md:px-3 py-2 rounded-lg hover:bg-white/[0.05]">
-                <i class="fas fa-globe text-xs md:text-[10px]"></i> 
-                <span class="hidden sm:inline uppercase tracking-wide">Annuaire</span>
-            </a>
-            
-            <div class="w-px h-5 bg-white/[0.06]"></div>
-            
-            <a href="/logout" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-white/[0.04] hover:bg-red-500/15 border border-white/[0.06] hover:border-red-500/30 transition-all duration-300 group shrink-0">
-                <i class="fas fa-arrow-right-from-bracket text-[10px] md:text-[11px] text-white/30 group-hover:text-red-400 transition-colors"></i>
-            </a>
-        </div>
-    </div>
-</nav>
+<%- include('partials/nav', { user: (typeof user !== 'undefined' ? user : null) }) %>
 
 <div class="max-w-[1400px] mx-auto px-5 md:px-8">
 
     <!-- ═══════════════ HEADER ═══════════════ -->
-    <header class="pt-10 pb-8 stagger-in" style="animation-delay:0.05s">
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
-            <div>
-                <p class="text-accent-400 text-xs font-semibold tracking-[0.3em] uppercase mb-3 flex items-center gap-2">
-                    <span class="w-6 h-px bg-accent-500"></span> Espace personnel
-                </p>
-                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">
-                    Bon retour, <span class="text-accent-400"><%= closer.prenom %></span>.
-                </h2>
-                <p class="text-white text-sm mt-2 font-light">Gérez votre profil et vos disponibilités depuis votre cockpit.</p>
+    <header class="pt-8 md:pt-10 pb-8 stagger-in" style="animation-delay:0.05s">
+        <div class="baguette-surface rounded-[32px] p-7 md:p-9 overflow-hidden relative">
+            <div class="absolute inset-0 opacity-40 pointer-events-none" style="background: radial-gradient(900px 420px at 20% 10%, rgba(139,92,246,0.16), transparent 55%), radial-gradient(700px 360px at 85% 35%, rgba(167,139,250,0.12), transparent 60%);"></div>
+
+            <div class="relative flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                <div>
+                    <p class="text-accent-400 text-[11px] font-semibold tracking-[0.32em] uppercase mb-3 flex items-center gap-2">
+                        <span class="w-6 h-px bg-accent-500"></span> Cockpit personnel
+                    </p>
+                    <h2 class="text-[clamp(2rem,3.2vw,2.6rem)] font-extrabold tracking-tight">
+                        Bon retour, <span class="text-accent-400"><%= closer.prenom %></span>.
+                    </h2>
+                    <p class="text-white/70 text-sm md:text-[15px] mt-2 font-light">
+                        Gère ton profil, ton track record et ta visibilité en quelques clics.
+                    </p>
+                </div>
+
+                <!-- Status pill -->
+                <div class="flex items-center gap-4 bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-3.5 shrink-0">
+                    <div class="text-right">
+                        <p class="text-[10px] text-white/70 uppercase font-bold tracking-wider mb-0.5">Statut</p>
+                        <p class="text-sm font-bold text-emerald-400"><%= closer.availability %></p>
+                    </div>
+                    <div class="relative">
+                        <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-emerald-500 rounded-full absolute inset-0 animate-ping opacity-40"></div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Status pill -->
-            <div class="flex items-center gap-4 bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-3.5 shrink-0">
-                <div class="text-right">
-                    <p class="text-[10px] text-white/70 uppercase font-bold tracking-wider mb-0.5">Statut</p>
-                    <p class="text-sm font-bold text-emerald-400"><%= closer.availability %></p>
-                </div>
-                <div class="relative">
-                    <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                    <div class="w-3 h-3 bg-emerald-500 rounded-full absolute inset-0 animate-ping opacity-40"></div>
-                </div>
-            </div>
+            <div class="h-px w-full bg-gradient-to-r from-transparent via-white/[0.06] to-transparent mt-7"></div>
         </div>
-        <div class="gradient-line mt-8 rounded-full"></div>
     </header>
 
     <!-- ═══════════════ MAIN GRID ═══════════════ -->
@@ -596,6 +584,8 @@
     });
     document.getElementById('updateForm')?.addEventListener('submit', () => { formChanged = false; });
 </script>
+
+<%- include('partials/premium-modal') %>
 
 </body>
 </html>

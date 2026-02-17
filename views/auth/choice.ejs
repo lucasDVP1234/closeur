@@ -1,27 +1,137 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.tailwindcss.com"></script>
-<style>body { font-family: sans-serif; background-color: #050505; color: #fff; }</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - CLOSER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    display: ['Outfit', 'sans-serif'],
+                    mono: ['JetBrains Mono', 'monospace'],
+                },
+                colors: {
+                    surface: { 50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8', 800: '#111113', 900: '#09090b', 950: '#050506' },
+                    accent: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' },
+                }
+            }
+        }
+    }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: #050506; color: #fafafa; overflow-x: hidden; position: relative; }
+
+        body::after {
+            content: '';
+            position: fixed; inset: -20%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(800px 450px at 40% 20%, rgba(139, 92, 246, 0.14), transparent 60%),
+                radial-gradient(600px 350px at 65% 80%, rgba(124, 58, 237, 0.10), transparent 65%);
+            opacity: 0.9;
+        }
+        body > * { position: relative; z-index: 1; }
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 9999;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        ::selection { background: rgba(139,92,246,0.4); color: white; }
+
+        .choice-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+            border: 1px solid rgba(255,255,255,0.07);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .choice-card::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(300px 200px at 50% 0%, rgba(139,92,246,0.12), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .choice-card:hover::before { opacity: 1; }
+        .choice-card:hover {
+            border-color: rgba(139,92,246,0.3);
+            transform: translateY(-6px);
+            box-shadow:
+                0 30px 80px -30px rgba(139,92,246,0.2),
+                0 0 0 1px rgba(139,92,246,0.1) inset;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; }
+        .delay-1 { animation-delay: 0.15s; opacity: 0; }
+        .delay-2 { animation-delay: 0.3s; opacity: 0; }
+        .delay-3 { animation-delay: 0.45s; opacity: 0; }
+    </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
-<div class="text-center space-y-8 w-full max-w-xl">
-<h1 class="text-3xl sm:text-4xl font-bold tracking-tighter">IDENTIFICATION.</h1>
-<div class="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center justify-center">
-<a href="/register/company" class="group w-full sm:w-64 h-48 sm:h-64 border border-white/10 bg-white/5 hover:bg-white/10 rounded-3xl flex flex-col items-center justify-center transition-all hover:scale-105 cursor-pointer backdrop-blur-md">
-<span class="text-4xl mb-4">🏢</span>
-<span class="text-xl font-bold group-hover:text-purple-400 transition">ENTREPRISE</span>
-<span class="text-xs text-gray-500 mt-2">Je cherche des talents</span>
-</a>
-<a href="/register/closer" class="group w-full sm:w-64 h-48 sm:h-64 border border-white/10 bg-white/5 hover:bg-white/10 rounded-3xl flex flex-col items-center justify-center transition-all hover:scale-105 cursor-pointer backdrop-blur-md">
-<span class="text-4xl mb-4">⚔️</span>
-<span class="text-xl font-bold group-hover:text-purple-400 transition">CLOSEUR</span>
-<span class="text-xs text-gray-500 mt-2">Je veux closer</span>
-</a>
-</div>
-<p class="text-sm text-gray-500">Déjà un compte ? <a href="/login" class="text-white underline">Se connecter</a></p>
-</div>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
+
+    <div class="text-center w-full max-w-xl">
+
+        <!-- Logo -->
+        <div class="mb-10 animate-fade-up">
+            <a href="/" class="inline-flex items-center gap-2.5 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-500 to-accent-700 flex items-center justify-center shadow-lg shadow-accent-500/20">
+                    <span class="text-white font-extrabold text-sm tracking-tight">C.</span>
+                </div>
+                <span class="text-white/60 text-sm font-medium tracking-wide group-hover:text-white/80 transition-colors">sefairecloser.com</span>
+            </a>
+        </div>
+
+        <!-- Title -->
+        <div class="mb-10 animate-fade-up delay-1">
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+                Rejoindre la <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-accent-600">plateforme</span>
+            </h1>
+            <p class="text-white/30 text-sm mt-2.5">Choisissez votre profil pour commencer.</p>
+        </div>
+
+        <!-- Choice Cards -->
+        <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 items-center justify-center animate-fade-up delay-2">
+
+            <a href="/register/company" class="choice-card group w-full sm:w-64 h-52 sm:h-64 rounded-2xl flex flex-col items-center justify-center cursor-pointer relative">
+                <div class="w-16 h-16 rounded-2xl bg-accent-500/8 flex items-center justify-center mb-4 group-hover:bg-accent-500/15 transition-colors">
+                    <span class="text-4xl">🏢</span>
+                </div>
+                <span class="text-lg font-bold text-white/90 group-hover:text-white transition-colors relative z-10">Entreprise</span>
+                <span class="text-xs text-white/30 mt-1.5 group-hover:text-white/50 transition-colors relative z-10">Je cherche des talents</span>
+            </a>
+
+            <a href="/register/closer" class="choice-card group w-full sm:w-64 h-52 sm:h-64 rounded-2xl flex flex-col items-center justify-center cursor-pointer relative">
+                <div class="w-16 h-16 rounded-2xl bg-accent-500/8 flex items-center justify-center mb-4 group-hover:bg-accent-500/15 transition-colors">
+                    <span class="text-4xl">🎯</span>
+                </div>
+                <span class="text-lg font-bold text-white/90 group-hover:text-white transition-colors relative z-10">Closeur</span>
+                <span class="text-xs text-white/30 mt-1.5 group-hover:text-white/50 transition-colors relative z-10">Je veux closer</span>
+            </a>
+
+        </div>
+
+        <!-- Footer -->
+        <p class="text-sm text-white/30 mt-10 animate-fade-up delay-3">
+            Déjà un compte ?
+            <a href="/login" class="text-accent-400 hover:text-accent-300 transition-colors font-medium">Se connecter</a>
+        </p>
+
+        <p class="mt-6 text-[11px] text-white/15 tracking-wider animate-fade-up delay-3">CLOSER. — Plateforme Elite</p>
+    </div>
+
 </body>
 </html>

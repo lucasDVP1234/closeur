@@ -5,75 +5,237 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opportunités — THE CLOSERS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        surface: { 50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8', 800: '#111113', 900: '#09090b', 950: '#050506' },
+                        accent: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' },
+                        gold: { 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <style>body { font-family: 'Outfit', sans-serif; background: #050506; color: #fff; }</style>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: #050506; color: #fafafa; overflow-x: hidden; position: relative; }
+
+        /* Grain overlay */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 9999;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        /* Ambient background (Baguette Studio vibe) */
+        body::after {
+            content: '';
+            position: fixed; inset: -20%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(900px 520px at 18% 12%, rgba(139, 92, 246, 0.16), transparent 60%),
+                radial-gradient(820px 460px at 78% 18%, rgba(167, 139, 250, 0.12), transparent 62%),
+                radial-gradient(720px 460px at 55% 78%, rgba(124, 58, 237, 0.10), transparent 65%);
+            opacity: 0.9;
+            filter: saturate(1.05);
+        }
+        body > * { position: relative; z-index: 1; }
+
+        ::selection { background: rgba(139,92,246,0.35); color: white; }
+
+
+        .baguette-surface {
+            background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                0 30px 90px -50px rgba(0,0,0,0.8),
+                0 0 0 1px rgba(255,255,255,0.02) inset;
+        }
+        .baguette-pill {
+            background: rgba(139, 92, 246, 0.10);
+            border: 1px solid rgba(139, 92, 246, 0.22);
+            color: rgba(167, 139, 250, 0.95);
+        }
+
+        .card-glow { position: relative; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease; }
+        .card-glow::after {
+            content: '';
+            position: absolute; inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(139,92,246,0), rgba(139,92,246,0.12), rgba(167,139,250,0.10), rgba(139,92,246,0));
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .card-glow:hover::after { opacity: 1; }
+        .card-glow:hover { transform: translateY(-6px); box-shadow: 0 22px 70px -25px rgba(139,92,246,0.20); }
+    </style>
 </head>
 <body class="min-h-screen pb-20">
 
-    <nav class="border-b border-white/10 bg-black/20 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="/" class="font-black tracking-widest text-sm">SEFAIRECLOSER.COM</a>
-            <div class="flex gap-4 text-xs font-bold uppercase tracking-wide">
-                <a href="/" class="opacity-50 hover:opacity-100 transition">Annuaire</a>
-                <% if(user.role === 'company') { %>
-                    <a href="/company/dashboard" class="text-white">Mon Espace Recruteur</a>
-                <% } else { %>
-                    <a href="/dashboard" class="opacity-50 hover:opacity-100 transition">Mon Profil</a>
-                <% } %>
-            </div>
-        </div>
-    </nav>
+    <%- include('partials/nav', { user: (typeof user !== 'undefined' ? user : null) }) %>
 
-    <div class="max-w-5xl mx-auto px-6 py-12">
-        <header class="mb-12 text-center">
-            <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">Opportunités <span class="text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-500">Exclusives</span></h1>
-            <p class="text-white/40 max-w-xl mx-auto">Accédez aux missions postées par les entreprises vérifiées. Postulez en un clic.</p>
+    <div class="max-w-[1400px] mx-auto px-5 md:px-8 py-10 md:py-12">
+        <header class="mb-8 md:mb-10">
+            <div class="baguette-surface rounded-[32px] p-7 md:p-10 overflow-hidden relative">
+                <div class="absolute inset-0 opacity-40 pointer-events-none" style="background: radial-gradient(900px 420px at 20% 10%, rgba(139,92,246,0.16), transparent 55%), radial-gradient(700px 360px at 85% 35%, rgba(167,139,250,0.12), transparent 60%);"></div>
+
+                <div class="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+                    <div class="max-w-2xl">
+                        <div class="mb-5">
+                            <p class="text-accent-400 text-xs font-semibold tracking-[0.3em] uppercase flex items-center gap-2">
+                                <span class="w-6 h-px bg-accent-500"></span> Missions disponibles
+                            </p>
+                        </div>
+
+                        <h1 class="text-[clamp(2.1rem,4.2vw,3.6rem)] font-extrabold tracking-tight leading-[1.05] mb-4">
+                            Opportunités <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-accent-400 to-accent-600">Exclusives</span>
+                        </h1>
+                        <p class="text-white/65 text-base md:text-lg font-light leading-relaxed">
+                            Accédez aux missions postées par les entreprises vérifiées. Postulez en un clic.
+                        </p>
+
+                        <div class="mt-6 flex flex-wrap items-center gap-3">
+                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06]">
+                                <span class="w-2 h-2 rounded-full bg-gold-400/90"></span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-white/60">Live</span>
+                                <span class="text-xs font-semibold text-white/80"><%= offers.length %> mission<%= offers.length > 1 ? 's' : '' %></span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.02] border border-white/[0.04]">
+                                <i class="fas fa-shield-halved text-[11px] text-white/40"></i>
+                                <span class="text-xs text-white/60">Entreprises vérifiées</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5 md:p-6 max-w-xl w-full">
+                        <p class="text-[10px] uppercase tracking-[0.22em] font-bold text-white/40 mb-4">Comment ça marche</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="rounded-xl bg-black/20 border border-white/[0.06] p-4">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">1 — Choisis</p>
+                                <p class="text-sm text-white/70 leading-snug">Une mission qui match ton marché.</p>
+                            </div>
+                            <div class="rounded-xl bg-black/20 border border-white/[0.06] p-4">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">2 — Postule</p>
+                                <p class="text-sm text-white/70 leading-snug">Un clic, candidature envoyée.</p>
+                            </div>
+                            <div class="rounded-xl bg-black/20 border border-white/[0.06] p-4">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">3 — Close</p>
+                                <p class="text-sm text-white/70 leading-snug">Tu prends l’appel et tu performes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-px w-full bg-gradient-to-r from-transparent via-white/[0.06] to-transparent mt-8"></div>
+            </div>
         </header>
 
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <% if(offers.length === 0) { %>
-                <div class="text-center py-20 border border-dashed border-white/10 rounded-2xl">
+                <div class="lg:col-span-2 text-center py-16 border border-dashed border-white/10 rounded-3xl bg-white/[0.02]">
                     <p class="text-white/30">Aucune offre disponible pour le moment.</p>
                 </div>
             <% } %>
 
             <% offers.forEach(offer => { %>
-                <div class="group bg-[#09090b] border border-white/10 p-6 rounded-2xl hover:border-white/30 transition-all duration-300 relative overflow-hidden">
-                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                <article class="card-glow group bg-[#09090b]/90 border border-white/10 p-6 rounded-3xl hover:border-white/20 transition-all duration-300 relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style="background: radial-gradient(700px 300px at 20% 0%, rgba(139,92,246,0.10), transparent 60%), radial-gradient(700px 360px at 90% 60%, rgba(167,139,250,0.10), transparent 60%);"></div>
+
+                    <div class="relative flex flex-col gap-5">
                         
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-2">
-                                <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-white/5 text-white/60"><%= offer.missionType %></span>
-                                <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-emerald-500/10 text-emerald-400"><%= offer.remuneration %> DE COMMISSION</span>
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-2xl bg-white/[0.03] border border-white/[0.07] flex items-center justify-center">
+                                    <i class="fas fa-briefcase text-white/45"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-[0.22em] font-bold text-white/35">Entreprise</p>
+                                    <div class="flex items-center gap-2">
+                                        <% if (user) { %>
+                                            <p class="text-sm font-semibold text-white/80 leading-none"><%= offer.companyName %></p>
+                                        <% } else { %>
+                                            <p class="text-sm font-semibold text-white/80 leading-none blur-sm select-none">Entreprise confidentielle</p>
+                                            <span class="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-white/5 text-white/45 border border-white/10">
+                                                <i class="fas fa-lock mr-1 opacity-70"></i> Connexion requise
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 class="text-xl font-bold text-white mb-1"><%= offer.title %></h3>
-                            <p class="text-sm text-white/40 mb-4 font-mono uppercase tracking-wide">Par <%= offer.companyName %></p>
-                            
-                            <p class="text-white/70 text-sm leading-relaxed max-w-2xl"><%= offer.description %></p>
+
+                            <div class="flex flex-wrap items-center justify-end gap-2">
+                                <span class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/5 text-white/60 border border-white/10">
+                                    <%= offer.missionType %>
+                                </span>
+                                <% if (offer.niche) { %>
+                                    <span class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/5 text-white/60 border border-white/10">
+                                        <i class="fas fa-tag mr-1 opacity-70"></i><%= offer.niche %>
+                                    </span>
+                                <% } %>
+                                <span class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                                    <%= offer.remuneration %> commission
+                                </span>
+                            </div>
                         </div>
 
-                        <div class="flex items-center gap-4 shrink-0">
-                            <% if (user.role === 'closer') { %>
-                                <% if (offer.applicants && offer.applicants.includes(user.id)) { %>
-                                    <button disabled class="px-6 py-3 rounded-xl bg-green-500/20 text-green-400 font-bold text-xs uppercase tracking-widest border border-green-500/20 cursor-default">
-                                        <i class="fas fa-check mr-2"></i> Candidature envoyée
-                                    </button>
-                                <% } else { %>
-                                    <form action="/offres/apply/<%= offer._id %>" method="POST">
-                                        <button type="submit" class="px-6 py-3 rounded-xl bg-white text-black font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                                            Postuler
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-extrabold text-white tracking-tight mb-2">
+                                <%= offer.title %>
+                            </h3>
+                            <p class="text-white/70 text-sm leading-relaxed">
+                                <%= offer.description %>
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-white/[0.06]">
+                            <div class="flex items-center gap-3 text-xs text-white/45 font-mono uppercase tracking-wide">
+                                <span class="inline-flex items-center gap-2">
+                                    <i class="fas fa-user-check text-[10px] opacity-70"></i>
+                                    <%= (offer.applicants && offer.applicants.length) ? offer.applicants.length : 0 %> candidat<%= (offer.applicants && offer.applicants.length > 1) ? 's' : '' %>
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-3 sm:justify-end">
+                                <% if (user && user.role === 'closer') { %>
+                                    <% if (offer.applicants && offer.applicants.includes(user.id)) { %>
+                                        <button disabled class="px-5 py-2.5 rounded-xl bg-green-500/20 text-green-300 font-black text-[11px] uppercase tracking-widest border border-green-500/20 cursor-default">
+                                            <i class="fas fa-check mr-2"></i> Candidature envoyée
                                         </button>
-                                    </form>
+                                    <% } else { %>
+                                        <form action="/offres/apply/<%= offer._id %>" method="POST">
+                                            <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-br from-accent-500 via-accent-400 to-accent-600 text-white font-black text-[11px] uppercase tracking-[0.18em] hover:scale-[1.03] active:scale-[0.99] transition-transform shadow-[0_18px_40px_-22px_rgba(139,92,246,0.55)]">
+                                                Postuler
+                                            </button>
+                                        </form>
+                                    <% } %>
+                                <% } else if (user) { %>
+                                    <span class="text-xs text-white/30 italic">Connectez-vous en tant que Closer</span>
+                                <% } else { %>
+                                    <a href="/login" class="px-5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.10] hover:border-white/25 hover:bg-white/[0.08] text-white/80 text-[11px] font-black uppercase tracking-widest transition-colors">
+                                        Se connecter
+                                    </a>
                                 <% } %>
-                            <% } else { %>
-                                <span class="text-xs text-white/30 italic">Connectez-vous en tant que Closer</span>
-                            <% } %>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </article>
             <% }) %>
         </div>
     </div>
+
+    <%- include('partials/premium-modal') %>
 </body>
 </html>

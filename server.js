@@ -321,10 +321,10 @@ app.post('/register/closer', upload.single('photo'), async (req, res) => {
 // ============================================================
 
 // 1. PAGE TOUTES LES OFFRES (Pour les Closers)
-app.get('/offres', isAuthenticated, async (req, res) => {
+app.get('/offres', async (req, res) => {
     // On récupère toutes les offres, triées par date (récentes en premier)
     const offers = await Offer.find().sort({ createdAt: -1 });
-    res.render('offres', { offers, user: req.session.user });
+    res.render('offres', { offers, user: req.session.user || null });
 });
 
 // 2. POSTULER A UNE OFFRE (Action Closer)

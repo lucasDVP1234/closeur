@@ -2,15 +2,35 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candidats — <%= offer.title %></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        surface: { 50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8', 800: '#111113', 900: '#09090b', 950: '#050506' },
+                        accent: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' },
+                        gold: { 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>body { font-family: 'Outfit', sans-serif; background: #050506; color: #fff; }</style>
 </head>
 <body class="min-h-screen bg-[#050506]">
 
-    <div class="max-w-7xl mx-auto px-6 py-10">
+    <%- include('partials/nav', { user: (typeof user !== 'undefined' ? user : null) }) %>
+
+    <div class="max-w-[1400px] mx-auto px-5 md:px-8 py-10">
         
         <div class="flex items-center justify-between mb-10 border-b border-white/10 pb-6">
             <div>

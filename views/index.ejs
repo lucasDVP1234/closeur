@@ -27,7 +27,39 @@
 </script>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'Outfit', sans-serif; background: #050506; color: #fafafa; overflow-x: hidden; }
+        body { font-family: 'Outfit', sans-serif; background: #050506; color: #fafafa; overflow-x: hidden; position: relative; }
+
+        /* --- Baguette Studio ambient background --- */
+        body::after {
+            content: '';
+            position: fixed; inset: -20%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(900px 500px at 18% 12%, rgba(139, 92, 246, 0.16), transparent 60%),
+                radial-gradient(800px 420px at 78% 18%, rgba(167, 139, 250, 0.12), transparent 62%),
+                radial-gradient(700px 420px at 55% 78%, rgba(124, 58, 237, 0.10), transparent 65%);
+            opacity: 0.9;
+            filter: saturate(1.05);
+        }
+        body > * { position: relative; z-index: 1; }
+
+        .baguette-surface {
+            background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                0 30px 90px -50px rgba(0,0,0,0.8),
+                0 0 0 1px rgba(255,255,255,0.02) inset;
+        }
+        .baguette-input {
+            background: rgba(255,255,255,0.04) !important;
+            border-color: rgba(255,255,255,0.14) !important;
+        }
+        .baguette-input:hover { border-color: rgba(139, 92, 246, 0.28) !important; }
+        .baguette-input:focus {
+            border-color: rgba(139, 92, 246, 0.95) !important;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15) !important;
+        }
 
         /* --- Grain overlay --- */
         body::before {
@@ -47,14 +79,6 @@
         /* --- Selection --- */
         ::selection { background: rgba(139,92,246,0.4); color: white; }
 
-        /* --- Animated gradient line --- */
-        .gradient-line {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #8b5cf6, #a78bfa, #8b5cf6, transparent);
-            background-size: 200% 100%;
-            animation: shimmer 3s ease-in-out infinite;
-        }
-        @keyframes shimmer { 0%,100% { background-position: 200% 0; } 50% { background-position: -200% 0; } }
 
         /* --- Card hover glow --- */
         .card-glow {
@@ -137,120 +161,64 @@
 </head>
 <body>
 
-<!-- ═══════════════ NAV ═══════════════ -->
-<nav class="sticky top-0 z-50 bg-surface-950/80 backdrop-blur-2xl border-b border-white/[0.04]">
-    <div class="max-w-[1400px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-2">
-        
-        <a href="/" class="group flex items-center gap-2 md:gap-3 select-none shrink-0 z-50 relative">
-            <div class="relative w-8 h-8 rounded-lg bg-accent-600 flex items-center justify-center overflow-hidden group-hover:rounded-xl transition-all duration-300 shrink-0">
-                <span class="text-white font-black text-sm tracking-tight">SFC</span>
-                <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            </div>
-            
-            <div class="flex flex-col justify-center">
-                <span class="text-[10px] md:text-sm font-bold tracking-normal md:tracking-[0.2em] uppercase text-white/80 group-hover:text-white transition-colors whitespace-nowrap">
-                    SEFAIRECLOSER.COM
-                </span>
-            </div>
-        </a>
+<%- include('partials/nav', { user: (typeof user !== 'undefined' ? user : null) }) %>
 
-        <div class="hidden md:flex items-center gap-4">
-            
-            <% if (!user || user.role === 'closer') { %>
-                <a href="/offres" class="text-xs font-bold uppercase tracking-widest text-white/60 hover:text-white transition-colors flex items-center gap-2 px-3 py-2">
-                    <i class="fas fa-briefcase text-[10px]"></i> Voir les missions
-                </a>
-            <% } %>
-
-            <% if (user) { %>
-
-                <% if (user.role === 'company') { %>
-                    <a href="/company/dashboard" class="flex items-center gap-2 bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] hover:border-white/20 px-4 py-2 rounded-full transition-all duration-300 group">
-                        <i class="fas fa-building text-white/60 group-hover:text-white text-xs"></i>
-                        <span class="text-xs font-bold text-white/80 group-hover:text-white tracking-wide uppercase">Espace Recruteur</span>
-                    </a>
-                <% } %>
-                
-                <% if (user.role === 'closer') { %>
-                    
-                    <% if (!user.isPremium) { %>
-                        <button onclick="openModal('premium-modal')" 
-                            class="relative overflow-hidden group bg-gradient-to-br from-white via-slate-100 to-slate-300 border border-white/60 text-slate-900 px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.15em] shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all transform hover:scale-105">
-                            <span class="relative z-10 flex items-center gap-2">
-                                <i class="far fa-gem text-slate-600"></i> <span>PRO</span>
-                            </span>
-                            <div class="absolute inset-0 bg-white/80 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12"></div>
-                        </button>
-                    <% } %>
-
-                    <a href="/dashboard" class="flex items-center gap-2 bg-white/[0.06] hover:bg-accent-600 border border-white/[0.08] hover:border-accent-500 px-4 py-2 rounded-full transition-all duration-300 group">
-                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse group-hover:bg-white"></span>
-                        <span class="text-xs font-semibold text-white/70 group-hover:text-white tracking-wide uppercase">Cockpit</span>
-                    </a>
-                <% } %>
-                
-                <a href="/logout" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/[0.04] hover:bg-red-500/15 border border-white/[0.06] hover:border-red-500/30 transition-all duration-300 group shrink-0" title="Déconnexion">
-                    <i class="fas fa-power-off text-[10px] text-white/30 group-hover:text-red-400 transition-colors"></i>
-                </a>
-
-            <% } else { %>
-                <div class="h-4 w-px bg-white/10 mx-1"></div>
-                <a href="/login" class="text-white/50 hover:text-white text-xs font-bold tracking-wide uppercase transition-colors px-2">Connexion</a>
-                <a href="/register-choice" class="bg-white text-surface-950 hover:bg-accent-500 hover:text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-lg shadow-white/5 hover:shadow-accent-500/20">Rejoindre</a>
-            <% } %>
-        </div>
-
-        <button id="mobile-menu-btn" class="md:hidden z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-white border border-white/10">
-            <i class="fas fa-bars"></i>
-        </button>
-
-    </div>
-</nav>
-
-<header class="max-w-[1400px] mx-auto px-5 md:px-8 pt-14 pb-6">
+<header class="max-w-[1400px] mx-auto px-5 md:px-8 pt-10 md:pt-14 pb-6">
     <div class="stagger-in" style="animation-delay:0.05s">
-        <p class="text-accent-400 text-xs font-semibold tracking-[0.3em] uppercase mb-5 flex items-center gap-2">
-            <span class="w-6 h-px bg-accent-500"></span> Répertoire Élite
-        </p>
-        <h2 class="hero-title text-[clamp(2.2rem,5.5vw,4.5rem)] font-extrabold leading-[1.05] tracking-tight mb-5">
-            Trouvez le closer<br>
-            <span class="text-white/50">qui va tout changer.</span>
-        </h2>
-        <p class="text-white/70 text-base md:text-lg max-w-xl font-light leading-relaxed mb-4">
-            Parcourez notre répertoire de closers vérifiés. Filtrez par expertise, expérience et spécialisation pour trouver le talent parfait.
-        </p>
+        <div class="baguette-surface rounded-[32px] p-7 md:p-10 overflow-hidden relative">
+            <div class="absolute inset-0 opacity-40 pointer-events-none" style="background: radial-gradient(900px 420px at 20% 10%, rgba(139,92,246,0.16), transparent 55%), radial-gradient(700px 360px at 85% 35%, rgba(167,139,250,0.12), transparent 60%);"></div>
 
-        <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
-            
-            <div class="flex items-center -space-x-3 md:-space-x-4">
-                <img src="https://closers-group.com/public/img/companies/oconico.png" 
-                     class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-30" 
-                     alt="Oconico">
-                <img src="https://closers-group.com/public/img/companies/quentin.png" 
-                     class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-20" 
-                     alt="Quentin">
-                <img src="https://closers-group.com/public/img/companies/wangen.png" 
-                     class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-10" 
-                     alt="Wangen">
-                <img src="https://closers-group.com/public/img/companies/taylor.png" 
-                     class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-0" 
-                     alt="Taylor">
-            </div>
-
-            <div class="flex flex-col items-start gap-1">
-                <div class="flex gap-1 text-accent-500 text-xs">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
+            <div class="relative">
+                <div class="mb-6">
+                    <p class="text-accent-400 text-xs font-semibold tracking-[0.3em] uppercase flex items-center gap-2">
+                        <span class="w-6 h-px bg-accent-500"></span> Répertoire Élite
+                    </p>
                 </div>
-                <p class="text-sm text-white/60 font-medium">
-                    <span class="text-white font-bold">+35</span> équipes de ventes partenaires
-                </p>
+
+                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+                    <div class="max-w-2xl">
+                        <h2 class="hero-title text-[clamp(2.2rem,5.5vw,4.6rem)] font-extrabold leading-[1.03] tracking-tight mb-5">
+                            Trouvez le closer<br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-accent-400 to-accent-600">qui va tout changer.</span>
+                        </h2>
+                        <p class="text-white/70 text-base md:text-lg font-light leading-relaxed">
+                            Parcourez notre répertoire de closers vérifiés. Filtrez par expertise, expérience et spécialisation pour trouver le talent parfait.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-5 bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-4">
+                        <div class="flex items-center -space-x-3 md:-space-x-4">
+                            <img src="https://closers-group.com/public/img/companies/oconico.png" 
+                                 class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-30" 
+                                 alt="Oconico">
+                            <img src="https://closers-group.com/public/img/companies/quentin.png" 
+                                 class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-20" 
+                                 alt="Quentin">
+                            <img src="https://closers-group.com/public/img/companies/wangen.png" 
+                                 class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-10" 
+                                 alt="Wangen">
+                            <img src="https://closers-group.com/public/img/companies/taylor.png" 
+                                 class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-0" 
+                                 alt="Taylor">
+                        </div>
+
+                        <div class="flex flex-col items-start gap-1">
+                            <div class="flex gap-1 text-accent-400 text-xs">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p class="text-sm text-white/60 font-medium">
+                                <span class="text-white font-bold">+35</span> équipes de ventes partenaires
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-
     </div>
 </header>
 
@@ -262,7 +230,7 @@
             <div class="flex-1 relative">
                 <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-sm"></i>
                 <input type="text" name="product" placeholder="Rechercher un produit, une niche, un mot-clé…" value="<%= filters.product || '' %>"
-                    class="w-full bg-white/[0.03] border border-white/[0.2] rounded-2xl py-4 pl-11 pr-5 text-white placeholder-white/50 text-sm font-medium transition-all duration-300 hover:border-white/15">
+                    class="baguette-input w-full rounded-2xl py-4 pl-11 pr-5 text-white placeholder-white/45 text-sm font-medium transition-all duration-300">
             </div>
             <button type="button" onclick="toggleFilters()" id="filterToggleBtn"
                 class="flex items-center justify-center gap-2.5 bg-white/[0.04] border border-white/[0.2] hover:border-accent-500/40 hover:bg-accent-600/10 rounded-2xl px-6 py-4 transition-all duration-300 group shrink-0">
@@ -271,7 +239,7 @@
                 <i class="fas fa-chevron-down text-[10px] text-white/20 group-hover:text-accent-400 transition-all duration-300" id="filterChevron"></i>
             </button>
             <button type="submit"
-                class="bg-accent-600 hover:bg-accent-700 text-white px-8 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-lg shadow-accent-600/20 hover:shadow-accent-600/40 shrink-0 flex items-center gap-2">
+                class="bg-accent-600 hover:bg-accent-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.18em] transition-all duration-300 shadow-[0_18px_40px_-22px_rgba(139,92,246,0.55)] hover:shadow-[0_22px_50px_-24px_rgba(139,92,246,0.75)] shrink-0 flex items-center gap-2.5">
                 <i class="fas fa-bolt text-[10px]"></i> Rechercher
             </button>
         </div>
@@ -377,7 +345,7 @@
             <p class="text-white/80 text-sm"><span class="text-white font-bold"><%= closers.length %></span> talent<%= closers.length > 1 ? 's' : '' %> trouvé<%= closers.length > 1 ? 's' : '' %></p>
         </div>
     </div>
-    <div class="gradient-line mt-4 rounded-full"></div>
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-white/[0.06] to-transparent mt-4"></div>
 </section>
 
 <!-- ═══════════════ GRID ═══════════════ -->
@@ -386,13 +354,12 @@
         <% closers.forEach((closer, idx) => { %>
             <div onclick="openModal('modal-<%= closer._id %>')"
                 class="card-glow relative rounded-2xl overflow-hidden cursor-pointer flex flex-col stagger-in group transition-all duration-500
-                <%= closer.isPremium ? 'border border-accent-400/50 shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_50px_rgba(255,255,255,0.25)] hover:border-accent-400/80' : 'bg-white/[0.02] border border-white/[0.1]' %>"
-                style="animation-delay: <%= 0.08 * (idx % 9) + 0.25 %>s">
+                <%= closer.isPremium ? 'border border-accent-400/40 shadow-[0_0_30px_rgba(139,92,246,0.10)] hover:shadow-[0_0_55px_rgba(139,92,246,0.22)] hover:border-accent-400/70' : 'bg-white/[0.02] border border-white/[0.10] hover:border-white/20 hover:bg-white/[0.03]' %>">
 
                 <% if (closer.isPremium) { %>
                     <div class="absolute top-0 left-0 z-30">
                         <div class="absolute top-3 left-3 z-20">
-                            <div class="bg-gradient-to-br from-accent-400 via-slate-100 to-slate-300 border border-white/60 py-1.5 px-3.5 rounded-lg shadow-md flex items-center gap-2">
+                            <div class="bg-gradient-to-br from-accent-400 via-slate-50 to-slate-200 border border-white/60 py-1.5 px-3.5 rounded-lg shadow-md flex items-center gap-2">
                                 <i class="far fa-gem text-[9px] text-slate-700"></i>
                                 <span class="text-[9px] font-black uppercase tracking-[0.25em] text-slate-800 leading-none">
                                     Pro
@@ -403,7 +370,7 @@
                 <% } %>
 
                 <div class="h-56 relative overflow-hidden">
-                    <img src="<%= closer.photoUrl %>" alt="<%= closer.nom %>" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" style="filter: saturate(<%= closer.isPremium ? '1.1' : '0.85' %>) brightness(0.9);">
+                    <img src="<%= closer.photoUrl %>" alt="<%= closer.nom %>" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 brightness-90 <%= closer.isPremium ? 'saturate-150' : 'saturate-100' %>">
                     <div class="absolute inset-0 bg-gradient-to-t from-surface-950 via-surface-950/30 to-transparent"></div>
 
                     <div class="absolute top-3 right-3 flex flex-col gap-1.5 items-end">
@@ -416,14 +383,14 @@
                         <h3 class="text-xl font-bold text-white leading-tight flex items-center gap-2">
                             <%= closer.prenom %> <%= closer.nom.charAt(0) %>.
                             <% if (closer.isPremium) { %> 
-                                <i class="fas fa-certificate text-gold-400 text-sm drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]" title="Vérifié Elite"></i> 
+                                <i class="fas fa-certificate text-accent-400 text-sm drop-shadow-[0_0_10px_rgba(139,92,246,0.8)]" title="Vérifié Elite"></i> 
                             <% } %>
                         </h3>
                         <p class="text-accent-400 text-[11px] font-mono font-medium mt-0.5 uppercase tracking-wide"><%= closer.market %></p>
                     </div>
                 </div>
 
-                <div class="p-5 flex flex-col flex-1 <%= closer.isPremium ? 'bg-gold-500/[0.03]' : '' %>">
+                <div class="p-5 flex flex-col flex-1 <%= closer.isPremium ? 'bg-accent-500/[0.03]' : '' %>">
                     <div class="grid grid-cols-2 gap-3 mb-4">
                         <div class="stat-pill rounded-xl px-3 py-2.5">
                             <p class="text-[9px] text-white/45 uppercase tracking-wider font-bold mb-0.5">Closé</p>
@@ -651,115 +618,7 @@
     </div>
 </footer>
 
-<div id="mobile-menu" class="fixed inset-0 bg-[#050506]/95 backdrop-blur-xl z-[100] transform translate-x-full transition-transform duration-300 flex flex-col justify-center items-center gap-8 md:hidden">
-    
-    <% if (!user || user.role === 'closer') { %>
-        <a href="/offres" class="text-2xl font-black text-white uppercase tracking-widest hover:text-accent-400 transition-colors">Les Missions</a>
-    <% } %>
-
-    <% if (user) { %>
-        <% if (user.role === 'company') { %>
-            <a href="/company/dashboard" class="text-2xl font-black text-white uppercase tracking-widest hover:text-accent-400 transition-colors">Espace Recruteur</a>
-        <% } %>
-
-        <% if (user.role === 'closer') { %>
-            <a href="/dashboard" class="text-2xl font-black text-white uppercase tracking-widest hover:text-accent-400 transition-colors">Mon Cockpit</a>
-            <% if (!user.isPremium) { %>
-                <button onclick="closeMobileMenu(); openModal('premium-modal')" class="text-lg font-bold text-slate-300 uppercase tracking-widest border border-white/20 px-6 py-2 rounded-full">Devenir Pro</button>
-            <% } %>
-        <% } %>
-
-        <a href="/logout" class="text-lg font-bold text-red-400 uppercase tracking-widest mt-4">Se déconnecter</a>
-    <% } else { %>
-        <a href="/login" class="text-2xl font-black text-white uppercase tracking-widest hover:text-accent-400 transition-colors">Connexion</a>
-        <a href="/register-choice" class="text-xl font-bold bg-white text-black px-8 py-3 rounded-full uppercase tracking-widest shadow-xl">Rejoindre</a>
-    <% } %>
-
-    <button onclick="closeMobileMenu()" class="absolute top-6 right-6 text-white/50 hover:text-white p-4">
-        <i class="fas fa-times text-2xl"></i>
-    </button>
-</div>
-
-
-<div id="premium-modal" class="modal-backdrop fixed inset-0 z-[150] flex items-center justify-center p-4 px-5 transition-opacity duration-300">
-    
-    <div class="absolute inset-0 bg-[#050506]/80 backdrop-blur-xl transition-opacity" onclick="closeModalDirect('premium-modal')"></div>
-    
-    <div class="modal-panel w-full max-w-md bg-[#09090b] border border-white/10 rounded-[32px] overflow-hidden relative shadow-[0_0_100px_-20px_rgba(255,255,255,0.1)] flex flex-col group">
-
-        <div class="absolute inset-0 opacity-20 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-100 contrast-150"></div>
-        <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-64 bg-white/10 blur-[80px] rounded-full pointer-events-none"></div>
-
-        <button onclick="closeModalDirect('premium-modal')" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all duration-300 z-50 border border-transparent hover:border-white/10">
-            <i class="fas fa-times text-xs"></i>
-        </button>
-
-        <div class="relative z-10 p-8 pt-12 flex flex-col items-center">
-            
-            <div class="mb-6 relative">
-                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 flex items-center justify-center shadow-2xl shadow-black/50 rotate-3 group-hover:rotate-6 transition-transform duration-700 ease-out">
-                    <i class="far fa-gem text-3xl text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"></i>
-                </div>
-                <div class="absolute inset-0 bg-white/20 blur-xl -z-10"></div>
-            </div>
-
-            <h2 class="text-3xl font-black text-white uppercase tracking-tight mb-2 text-center">
-                Closer <span class="text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-300 to-zinc-500">Pro</span>
-            </h2>
-            <p class="text-zinc-400 text-sm font-medium text-center max-w-[280px] leading-relaxed mb-8">
-                L'abonnement des closers qui ne négocient pas leur valeur. Passez au niveau supérieur.
-            </p>
-
-            <div class="w-full space-y-3 mb-8">
-                <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group/item">
-                    <div class="w-10 h-10 rounded-xl bg-black border border-white/10 flex items-center justify-center text-white shrink-0 shadow-lg">
-                        <i class="far fa-gem text-xs"></i> </div>
-                    <div>
-                        <h4 class="font-bold text-white text-[14px] tracking-wide">Badge Pro Platine</h4>
-                        <p class="text-[12px] text-zinc-500 group-hover/item:text-zinc-400 transition-colors">Votre profil certifié et mis en avant.</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group/item">
-                    <div class="w-10 h-10 rounded-xl bg-black border border-white/10 flex items-center justify-center text-white shrink-0 shadow-lg">
-                        <i class="fas fa-arrow-up text-sm"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-white text-[14px] tracking-wide">Priorité de Recherche</h4>
-                        <p class="text-[12px] text-zinc-500 group-hover/item:text-zinc-400 transition-colors">Apparaissez toujours en top liste.</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group/item">
-                    <div class="w-10 h-10 rounded-xl bg-black border border-white/10 flex items-center justify-center text-white shrink-0 shadow-lg">
-                        <i class="fas fa-calendar-check text-sm"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-white text-[14px] tracking-wide">Liens Directs</h4>
-                        <p class="text-[12px] text-zinc-500 group-hover/item:text-zinc-400 transition-colors">Accès direct à votre Calendly.</p>
-                    </div>
-                </div>
-            </div>
-
-            <form action="/create-closer-checkout" method="POST" class="w-full">
-                <button type="submit" class="relative w-full py-4 rounded-xl bg-white text-black font-black uppercase tracking-[0.15em] text-xs shadow-[0_0_30px_-5px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_-5px_rgba(255,255,255,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden group/btn">
-                    
-                    <span class="relative z-10">Activer • 29€/mois</span>
-                    <i class="fas fa-arrow-right relative z-10 group-hover/btn:translate-x-1 transition-transform"></i>
-                    
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1s_infinite] z-0"></div>
-                </button>
-            </form>
-
-            <div class="mt-5 flex items-center gap-3 opacity-40">
-                <i class="fab fa-stripe text-2xl text-white"></i>
-                <span class="h-3 w-px bg-white/30"></span>
-                <p class="text-[9px] text-white font-mono uppercase tracking-widest">Secure Payment</p>
-            </div>
-
-        </div>
-    </div>
-</div>
+<%- include('partials/premium-modal') %>
 <script>
     // --- Filter toggle ---
     function toggleFilters() {
@@ -833,31 +692,6 @@
         if (textSpan) {
             textSpan.style.filter = 'none';
         }
-    }
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const icon = menuBtn.querySelector('i');
-
-    menuBtn.addEventListener('click', () => {
-        const isOpen = mobileMenu.classList.contains('translate-x-full');
-        
-        if (isOpen) {
-            // OUVRIR
-            mobileMenu.classList.remove('translate-x-full');
-            icon.classList.remove('fa-bars');
-            icon.classList.add('fa-times');
-            document.body.style.overflow = 'hidden'; // Empêcher le scroll
-        } else {
-            // FERMER
-            closeMobileMenu();
-        }
-    });
-
-    function closeMobileMenu() {
-        mobileMenu.classList.add('translate-x-full');
-        icon.classList.remove('fa-times');
-        icon.classList.add('fa-bars');
-        document.body.style.overflow = ''; // Réactiver le scroll
     }
 </script>
 

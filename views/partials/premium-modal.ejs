@@ -1,0 +1,114 @@
+<!-- ═══════════════ PREMIUM MODAL (shared) ═══════════════ -->
+<style>
+  /* Minimal modal behavior (shared across pages) */
+  .modal-backdrop { opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+  .modal-backdrop.active { opacity: 1; pointer-events: all; }
+  .modal-panel { transform: translateY(30px) scale(0.97); opacity: 0; transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+  .modal-backdrop.active .modal-panel { transform: translateY(0) scale(1); opacity: 1; }
+</style>
+
+<div id="premium-modal" class="modal-backdrop fixed inset-0 z-[150] flex items-center justify-center p-4 px-5 transition-opacity duration-300">
+  <div class="absolute inset-0 bg-[#050506]/80 backdrop-blur-xl transition-opacity" onclick="closeModalDirect('premium-modal')"></div>
+  
+  <div class="modal-panel w-full max-w-md bg-[#09090b] border border-white/10 rounded-[32px] overflow-hidden relative shadow-[0_0_100px_-20px_rgba(255,255,255,0.1)] flex flex-col group">
+    <div class="absolute inset-0 opacity-20 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-100 contrast-150"></div>
+    <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-64 bg-white/10 blur-[80px] rounded-full pointer-events-none"></div>
+
+    <button onclick="closeModalDirect('premium-modal')" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-all duration-300 z-50 border border-transparent hover:border-white/10" aria-label="Fermer">
+      <i class="fas fa-times text-xs"></i>
+    </button>
+
+    <div class="relative z-10 p-8 pt-12 flex flex-col items-center">
+      <div class="mb-6 relative">
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 flex items-center justify-center shadow-2xl shadow-black/50 rotate-3 group-hover:rotate-6 transition-transform duration-700 ease-out">
+          <i class="far fa-gem text-3xl text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"></i>
+        </div>
+        <div class="absolute inset-0 bg-white/20 blur-xl -z-10"></div>
+      </div>
+
+      <h2 class="text-3xl font-black text-white uppercase tracking-tight mb-2 text-center">
+        Closer <span class="text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-300 to-zinc-500">Pro</span>
+      </h2>
+      <p class="text-zinc-400 text-sm font-medium text-center max-w-[280px] leading-relaxed mb-8">
+        L'abonnement des closers qui ne négocient pas leur valeur. Passez au niveau supérieur.
+      </p>
+
+      <div class="w-full space-y-3 mb-8">
+        <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group/item">
+          <div class="w-10 h-10 rounded-xl bg-black border border-white/10 flex items-center justify-center text-white shrink-0 shadow-lg">
+            <i class="far fa-gem text-xs"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-white text-[14px] tracking-wide">Badge Pro Platine</h4>
+            <p class="text-[12px] text-zinc-500 group-hover/item:text-zinc-400 transition-colors">Votre profil certifié et mis en avant.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group/item">
+          <div class="w-10 h-10 rounded-xl bg-black border border-white/10 flex items-center justify-center text-white shrink-0 shadow-lg">
+            <i class="fas fa-arrow-up text-sm"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-white text-[14px] tracking-wide">Priorité de Recherche</h4>
+            <p class="text-[12px] text-zinc-500 group-hover/item:text-zinc-400 transition-colors">Apparaissez toujours en top liste.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 group/item">
+          <div class="w-10 h-10 rounded-xl bg-black border border-white/10 flex items-center justify-center text-white shrink-0 shadow-lg">
+            <i class="fas fa-calendar-check text-sm"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-white text-[14px] tracking-wide">Liens Directs</h4>
+            <p class="text-[12px] text-zinc-500 group-hover/item:text-zinc-400 transition-colors">Accès direct à votre Calendly.</p>
+          </div>
+        </div>
+      </div>
+
+      <form action="/create-closer-checkout" method="POST" class="w-full">
+        <button type="submit" class="relative w-full py-4 rounded-xl bg-white text-black font-black uppercase tracking-[0.15em] text-xs shadow-[0_0_30px_-5px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_-5px_rgba(255,255,255,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden group/btn">
+          <span class="relative z-10">Activer • 29€/mois</span>
+          <i class="fas fa-arrow-right relative z-10 group-hover/btn:translate-x-1 transition-transform"></i>
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1s_infinite] z-0"></div>
+        </button>
+      </form>
+
+      <div class="mt-5 flex items-center gap-3 opacity-40">
+        <i class="fab fa-stripe text-2xl text-white"></i>
+        <span class="h-3 w-px bg-white/30"></span>
+        <p class="text-[9px] text-white font-mono uppercase tracking-widest">Secure Payment</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const premiumModal = document.getElementById('premium-modal');
+    if (!premiumModal) return;
+
+    // Do not override if page already defines these.
+    window.openPremiumModal = window.openPremiumModal || function openPremiumModal() {
+      premiumModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closePremiumModal = window.closePremiumModal || function closePremiumModal() {
+      premiumModal.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    window.closeModalDirect = window.closeModalDirect || function closeModalDirect(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (premiumModal.classList.contains('active')) window.closePremiumModal();
+    });
+  })();
+</script>
+
