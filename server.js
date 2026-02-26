@@ -248,7 +248,7 @@ app.post('/create-portal-session', isAuthenticated, async (req, res) => {
 app.get('/register-choice', (req, res) => res.render('auth/choice'));
 
 // 3. INSCRIPTION ENTREPRISE
-app.get('/register/company', (req, res) => res.render('auth/register-company'));
+app.get('/register/company', (req, res) => res.render('auth/register-company', { error: null }));
 app.post('/register/company', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -278,13 +278,17 @@ app.post('/register/company', async (req, res) => {
         });
 
     } catch (e) {
-        console.log(e);
-        res.send("Erreur inscription Company : " + e.message);
+        console.error(e);
+        let message = 'Une erreur est survenue. Veuillez réessayer.';
+        if (e.code === 11000) {
+            message = 'Cet email est déjà utilisé.';
+        }
+        res.render('auth/register-company', { error: message });
     }
 });
 
 // 4. INSCRIPTION CLOSEUR
-app.get('/register/closer', (req, res) => res.render('auth/register-closer'));
+app.get('/register/closer', (req, res) => res.render('auth/register-closer', { error: null }));
 // Dans server.js
 app.post('/register/closer', upload.single('photo'), async (req, res) => {
     try {
@@ -293,7 +297,7 @@ app.post('/register/closer', upload.single('photo'), async (req, res) => {
         // --- FIX : On vérifie d'abord si l'email existe ---
         const existingUser = await Closer.findOne({ email }) || await Company.findOne({ email });
         if (existingUser) {
-            return res.send("<h1>Erreur</h1><p>Cet email est déjà utilisé.</p><a href='/register/closer'>Réessayer</a>");
+            return res.render('auth/register-closer', { error: 'Cet email est déjà utilisé.' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -312,7 +316,11 @@ app.post('/register/closer', upload.single('photo'), async (req, res) => {
 
     } catch (e) { 
         console.error(e);
-        res.send("Erreur technique : " + e.message); 
+        let message = 'Une erreur technique est survenue. Veuillez réessayer.';
+        if (e.code === 11000) {
+            message = 'Cet email est déjà utilisé.';
+        }
+        res.render('auth/register-closer', { error: message });
     }
 });
 
