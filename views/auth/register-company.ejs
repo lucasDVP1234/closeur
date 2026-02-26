@@ -1,57 +1,173 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entreprise - THE CLOSERS</title>
+    <title>Espace Entreprise - CLOSER</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #fff; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    display: ['Outfit', 'sans-serif'],
+                    mono: ['JetBrains Mono', 'monospace'],
+                },
+                colors: {
+                    surface: { 50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8', 800: '#111113', 900: '#09090b', 950: '#050506' },
+                    accent: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' },
+                }
+            }
+        }
+    }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: #050506; color: #fafafa; overflow-x: hidden; position: relative; }
+
+        body::after {
+            content: '';
+            position: fixed; inset: -20%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(700px 400px at 70% 25%, rgba(139, 92, 246, 0.16), transparent 60%),
+                radial-gradient(500px 350px at 25% 75%, rgba(124, 58, 237, 0.10), transparent 65%);
+            opacity: 0.9;
+        }
+        body > * { position: relative; z-index: 1; }
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 9999;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        ::selection { background: rgba(139,92,246,0.4); color: white; }
+
+        .auth-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                0 40px 100px -50px rgba(0,0,0,0.8),
+                0 0 0 1px rgba(255,255,255,0.02) inset,
+                0 0 120px -40px rgba(139,92,246,0.08);
+        }
+
+        .auth-input {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.10);
+            transition: all 0.3s ease;
+        }
+        .auth-input:hover { border-color: rgba(139, 92, 246, 0.25); }
+        .auth-input:focus {
+            border-color: rgba(139, 92, 246, 0.7);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+            background: rgba(255,255,255,0.06);
+            outline: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .btn-primary::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .btn-primary:hover::before { opacity: 1; }
+        .btn-primary:hover { box-shadow: 0 20px 50px -15px rgba(139,92,246,0.4); transform: translateY(-1px); }
+        .btn-primary:active { transform: translateY(0); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; }
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+    </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+<body class="min-h-screen flex items-center justify-center p-5">
 
-    <div class="w-full max-w-md bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl shadow-2xl relative">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-white shadow-[0_0_20px_rgba(255,255,255,0.2)]"></div>
+    <div class="w-full max-w-[420px]">
 
-        <div class="text-center mb-8">
-            <span class="text-4xl">🏢</span>
-            <h2 class="text-2xl font-bold mt-4">Espace Entreprise</h2>
-            <p class="text-gray-500 text-sm">Créez votre compte pour chasser les talents.</p>
+        <!-- Logo -->
+        <div class="text-center mb-8 animate-fade-up">
+            <a href="/" class="inline-flex items-center gap-2.5 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-500 to-accent-700 flex items-center justify-center shadow-lg shadow-accent-500/20">
+                    <span class="text-white font-extrabold text-sm tracking-tight">C.</span>
+                </div>
+                <span class="text-white/60 text-sm font-medium tracking-wide group-hover:text-white/80 transition-colors">sefairecloser.com</span>
+            </a>
         </div>
 
-        <% if (locals.error) { %>
-            <div class="mb-6 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wide flex items-center gap-2 animate-pulse">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
-                <%= error %>
-            </div>
-        <% } %>
+        <!-- Card -->
+        <div class="auth-card rounded-2xl p-8 sm:p-10 animate-fade-up delay-1">
 
-        <form action="/register/company" method="POST" class="space-y-5">
-            <div>
-                <label class="block text-xs uppercase text-gray-500 mb-1 ml-1">Nom de la société</label>
-                <input type="text" name="companyName" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-purple-500 transition-all">
+            <!-- Header -->
+            <div class="mb-8 text-center">
+                <div class="w-14 h-14 rounded-2xl bg-accent-500/10 flex items-center justify-center mx-auto mb-4">
+                    <span class="text-3xl">🏢</span>
+                </div>
+                <h1 class="text-2xl font-bold text-white tracking-tight">Espace Entreprise</h1>
+                <p class="text-white/40 text-sm mt-1.5">Créez votre compte pour chasser les talents.</p>
             </div>
 
-            <div>
-                <label class="block text-xs uppercase text-gray-500 mb-1 ml-1">Email Pro</label>
-                <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-purple-500 transition-all">
-            </div>
-            
-            <div>
-                <label class="block text-xs uppercase text-gray-500 mb-1 ml-1">Mot de passe</label>
-                <input type="password" name="password" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-purple-500 transition-all">
-            </div>
+            <% if (locals.error) { %>
+                <div class="mb-6 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wide flex items-center gap-2 animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    <%= error %>
+                </div>
+            <% } %>
 
-            <button type="submit" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-gray-200 transition-all uppercase tracking-widest mt-4">
-                Créer mon compte
-            </button>
-        </form>
+            <!-- Form -->
+            <form action="/register/company" method="POST" class="space-y-5">
+                <div class="animate-fade-up delay-2">
+                    <label class="block text-[11px] uppercase text-white/35 font-semibold tracking-wider mb-2 ml-0.5">Nom de la société</label>
+                    <input type="text" name="companyName" required
+                        class="auth-input w-full rounded-xl px-4 py-3.5 text-white text-sm placeholder-white/20"
+                        placeholder="Votre entreprise">
+                </div>
 
-        <p class="text-center mt-6 text-sm text-gray-500">
-            <a href="/login" class="text-gray-400 hover:text-white">Retour connexion</a>
-        </p>
+                <div class="animate-fade-up delay-2">
+                    <label class="block text-[11px] uppercase text-white/35 font-semibold tracking-wider mb-2 ml-0.5">Email Pro</label>
+                    <input type="email" name="email" required
+                        class="auth-input w-full rounded-xl px-4 py-3.5 text-white text-sm placeholder-white/20"
+                        placeholder="contact@entreprise.com">
+                </div>
+                
+                <div class="animate-fade-up delay-3">
+                    <label class="block text-[11px] uppercase text-white/35 font-semibold tracking-wider mb-2 ml-0.5">Mot de passe</label>
+                    <input type="password" name="password" required
+                        class="auth-input w-full rounded-xl px-4 py-3.5 text-white text-sm placeholder-white/20"
+                        placeholder="••••••••">
+                </div>
+
+                <div class="pt-2 animate-fade-up delay-4">
+                    <button type="submit" class="btn-primary w-full text-white font-semibold py-3.5 rounded-xl text-sm tracking-wide">
+                        Créer mon compte
+                    </button>
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <p class="text-center mt-7 text-sm text-white/30">
+                <a href="/login" class="text-accent-400 hover:text-accent-300 transition-colors font-medium">Retour connexion</a>
+            </p>
+        </div>
+
+        <!-- Bottom -->
+        <p class="text-center mt-6 text-[11px] text-white/15 tracking-wider animate-fade-up delay-4">CLOSER. — Plateforme Elite</p>
     </div>
 
 </body>
