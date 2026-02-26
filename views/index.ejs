@@ -42,7 +42,8 @@
             opacity: 0.9;
             filter: saturate(1.05);
         }
-        body > * { position: relative; z-index: 1; }
+        body > *:not(nav) { position: relative; z-index: 1; }
+        nav { position: sticky; z-index: 60; }
 
         .baguette-surface {
             background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
