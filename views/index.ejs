@@ -419,10 +419,10 @@
             </div>
 
             <!-- ═══════════════ MODAL ═══════════════ -->
-            <div id="modal-<%= closer._id %>" class="modal-backdrop fixed inset-0 z-[100] flex items-center justify-center p-4" onclick="closeModal(event, 'modal-<%= closer._id %>')">
+            <div id="modal-<%= closer._id %>" class="modal-backdrop fixed inset-0 z-[100] flex items-stretch md:items-center justify-center p-0 md:p-4" onclick="closeModal(event, 'modal-<%= closer._id %>')">
                 <div class="absolute inset-0 bg-surface-950/85 backdrop-blur-xl"></div>
 
-                <div class="modal-panel bg-surface-900 w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl border border-white/[0.06] shadow-2xl shadow-black/60 relative z-10 flex flex-col md:flex-row" onclick="event.stopPropagation()">
+                <div class="modal-panel bg-surface-900 w-full md:max-w-4xl h-full md:h-auto md:max-h-[92vh] overflow-y-auto rounded-none md:rounded-3xl border-0 md:border md:border-white/[0.06] shadow-2xl shadow-black/60 relative z-10 flex flex-col md:flex-row" onclick="event.stopPropagation()">
 
                     <!-- Close btn -->
                     <button onclick="closeModalDirect('modal-<%= closer._id %>')" class="absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.08] flex items-center justify-center transition-all z-20 group">
@@ -492,7 +492,7 @@
                     </div>
 
                     <!-- Right panel -->
-                    <div class="md:w-[62%] p-7 md:p-8 overflow-y-auto">
+                    <div class="md:w-[62%] p-5 md:p-8 overflow-y-visible md:overflow-y-auto">
                         <!-- Tags -->
                         <div class="flex flex-wrap gap-2 mb-8">
                             <span class="bg-accent-600 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wide"><%= closer.profileType %></span>
