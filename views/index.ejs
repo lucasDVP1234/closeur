@@ -430,14 +430,14 @@
                     </button>
 
                     <!-- Left panel -->
-                    <div class="md:w-[38%] bg-white/[0.02] p-7 md:p-8 border-r border-white/[0.04] flex flex-col">
-                        <div class="w-full aspect-[4/5] rounded-2xl overflow-hidden mb-6 border border-white/[0.06] relative">
+                    <div class="md:w-[38%] bg-white/[0.02] p-5 md:p-8 border-r border-white/[0.04] flex flex-col">
+                        <div class="w-32 h-32 md:w-full md:aspect-[4/5] md:h-auto rounded-2xl overflow-hidden mb-4 md:mb-6 border border-white/[0.06] relative mx-auto md:mx-0 shrink-0">
                             <img src="<%= closer.photoUrl %>" class="w-full h-full object-cover" style="filter: saturate(0.9);">
                             <div class="absolute inset-0 bg-gradient-to-t from-surface-900/50 to-transparent"></div>
                         </div>
 
-                        <h2 class="text-2xl font-bold leading-tight"><%= closer.prenom %></h2>
-                        <h2 class="text-2xl font-bold text-accent-400 mb-5"><%= closer.nom.charAt(0) %>.</h2>
+                        <h2 class="text-xl md:text-2xl font-bold leading-tight text-center md:text-left"><%= closer.prenom %></h2>
+                        <h2 class="text-xl md:text-2xl font-bold text-accent-400 mb-4 md:mb-5 text-center md:text-left"><%= closer.nom.charAt(0) %>.</h2>
 
                         <div class="space-y-3 mb-6 text-sm">
                             <div class="flex justify-between py-2 border-b border-white/[0.04]">
