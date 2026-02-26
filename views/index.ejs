@@ -155,6 +155,13 @@
         /* --- Responsive --- */
         @media (max-width: 768px) {
             .hero-title { font-size: 2.2rem !important; line-height: 1.1 !important; }
+
+            /* Quand un modal de closer est ouvert sur mobile, on cache la nav et le header
+               pour que la croix soit toujours bien visible et que le focus soit sur la fiche. */
+            body.modal-open nav,
+            body.modal-open header {
+                display: none;
+            }
         }
         
     </style>
@@ -186,31 +193,31 @@
                         </p>
                     </div>
 
-                    <div class="flex items-center gap-5 bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-4">
-                        <div class="flex items-center -space-x-3 md:-space-x-4">
+                    <div class="flex items-center gap-3 md:gap-5 bg-white/[0.03] border border-white/[0.06] rounded-2xl px-3 py-3 md:px-5 md:py-4 max-w-full overflow-hidden shrink-0">
+                        <div class="flex items-center -space-x-3 shrink-0">
                             <img src="https://closers-group.com/public/img/companies/oconico.png" 
-                                 class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-30" 
+                                 class="w-8 h-8 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-30" 
                                  alt="Oconico">
                             <img src="https://closers-group.com/public/img/companies/quentin.png" 
-                                 class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-20" 
+                                 class="w-8 h-8 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-20" 
                                  alt="Quentin">
                             <img src="https://closers-group.com/public/img/companies/wangen.png" 
-                                 class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-10" 
+                                 class="w-8 h-8 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-10" 
                                  alt="Wangen">
                             <img src="https://closers-group.com/public/img/companies/taylor.png" 
-                                 class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-0" 
+                                 class="w-8 h-8 md:w-12 md:h-12 rounded-full border-2 border-[#050506] shadow-lg object-cover z-0" 
                                  alt="Taylor">
                         </div>
 
-                        <div class="flex flex-col items-start gap-1">
-                            <div class="flex gap-1 text-accent-400 text-xs">
+                        <div class="flex flex-col items-start gap-1 min-w-0">
+                            <div class="flex gap-0.5 md:gap-1 text-accent-400 text-[10px] md:text-xs">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star-half-alt"></i>
                             </div>
-                            <p class="text-sm text-white/60 font-medium">
+                            <p class="text-xs md:text-sm text-white/60 font-medium leading-snug">
                                 <span class="text-white font-bold">+35</span> équipes de ventes partenaires
                             </p>
                         </div>
@@ -657,18 +664,34 @@
 
     // --- Modal ---
     function openModal(id) {
-        document.getElementById(id).classList.add('active');
+        const modal = document.getElementById(id);
+        if (!modal) return;
+        modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open');
     }
     function closeModal(e, id) {
         if (e.target === e.currentTarget || e.target.closest('.modal-backdrop > .absolute')) {
-            document.getElementById(id).classList.remove('active');
-            document.body.style.overflow = '';
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            modal.classList.remove('active');
+
+            // Si plus aucun modal n'est ouvert, on réaffiche la page normalement
+            if (!document.querySelector('.modal-backdrop.active')) {
+                document.body.style.overflow = '';
+                document.body.classList.remove('modal-open');
+            }
         }
     }
     function closeModalDirect(id) {
-        document.getElementById(id).classList.remove('active');
-        document.body.style.overflow = '';
+        const modal = document.getElementById(id);
+        if (!modal) return;
+        modal.classList.remove('active');
+
+        if (!document.querySelector('.modal-backdrop.active')) {
+            document.body.style.overflow = '';
+            document.body.classList.remove('modal-open');
+        }
     }
     // ESC to close
     document.addEventListener('keydown', e => {
@@ -677,6 +700,7 @@
                 m.classList.remove('active');
             });
             document.body.style.overflow = '';
+            document.body.classList.remove('modal-open');
         }
     });
 
