@@ -420,10 +420,10 @@
             </div>
 
             <!-- ═══════════════ MODAL ═══════════════ -->
-            <div id="modal-<%= closer._id %>" class="modal-backdrop fixed inset-0 z-[100] flex items-stretch md:items-center justify-center p-0 md:p-4" onclick="closeModal(event, 'modal-<%= closer._id %>')">
-                <div class="absolute inset-0 bg-surface-950/85 backdrop-blur-xl"></div>
+            <div id="modal-<%= closer._id %>" class="modal-backdrop fixed inset-0 z-[100] flex items-stretch md:items-center justify-center p-3 md:p-4" onclick="closeModal(event, 'modal-<%= closer._id %>')">
+                <div class="absolute inset-0 bg-surface-950/75 backdrop-blur-2xl"></div>
 
-                <div class="modal-panel bg-surface-900 w-full md:max-w-4xl h-full md:h-auto md:max-h-[92vh] overflow-y-auto rounded-none md:rounded-3xl border-0 md:border md:border-white/[0.06] shadow-2xl shadow-black/60 relative z-10 flex flex-col md:flex-row" onclick="event.stopPropagation()">
+                <div class="modal-panel bg-surface-900 w-full md:max-w-4xl h-full md:h-auto md:max-h-[92vh] overflow-y-auto rounded-2xl md:rounded-3xl border border-white/[0.08] md:border-white/[0.06] shadow-2xl shadow-black/60 relative z-10 flex flex-col md:flex-row" onclick="event.stopPropagation()">
 
                     <!-- Close btn -->
                     <button onclick="closeModalDirect('modal-<%= closer._id %>')" class="absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/[0.12] border border-white/[0.08] flex items-center justify-center transition-all z-20 group">
